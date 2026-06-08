@@ -1,0 +1,1693 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>A/L Mastery Hub | Premium Study Planner</title>
+  <style>
+    :root{
+      --bg-0:#050816;
+      --bg-1:#0b1224;
+      --bg-2:#101a33;
+      --card: rgba(255,255,255,.08);
+      --card-2: rgba(255,255,255,.12);
+      --stroke: rgba(255,255,255,.12);
+      --stroke-2: rgba(255,255,255,.18);
+      --text:#f4f7ff;
+      --muted:#b5c2df;
+      --muted-2:#93a3c6;
+      --accent:#8ddcff;
+      --accent-2:#b39dff;
+      --accent-3:#53e3a6;
+      --warn:#ffcc66;
+      --danger:#ff7a7a;
+      --good:#63e6be;
+      --shadow: 0 28px 90px rgba(0,0,0,.35);
+      --radius: 28px;
+      --radius-sm: 18px;
+      --max: 1500px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{min-height:100%}
+    body{
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(141,220,255,.20), transparent 24%),
+        radial-gradient(circle at 85% 10%, rgba(179,157,255,.18), transparent 22%),
+        radial-gradient(circle at bottom, rgba(83,227,166,.14), transparent 30%),
+        linear-gradient(135deg, var(--bg-0), var(--bg-1) 40%, var(--bg-2));
+      padding: 22px;
+      overflow-x:hidden;
+    }
+    .app{
+      max-width: var(--max);
+      margin: 0 auto;
+      background: rgba(9,15,32,.70);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 34px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      overflow:hidden;
+    }
+    .hero{
+      padding: 28px 28px 18px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.06), transparent);
+    }
+    .hero-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap: 16px;
+      flex-wrap:wrap;
+    }
+    .brand h1{
+      font-size: clamp(2rem, 4vw, 3.7rem);
+      letter-spacing:-.05em;
+      line-height: 1.02;
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, #ffffff 0%, var(--accent) 35%, var(--accent-2) 75%);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+    .brand p{
+      max-width: 900px;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.75;
+    }
+    .hero-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 10px;
+      align-items:center;
+      justify-content:flex-end;
+    }
+    .pill{
+      padding: 11px 15px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      font-weight: 700;
+      white-space:nowrap;
+      box-shadow: 0 10px 24px rgba(0,0,0,.14);
+    }
+    .pill strong{color:#fff}
+    .btn{
+      border:0;
+      border-radius: 16px;
+      padding: 12px 16px;
+      font-weight: 800;
+      cursor:pointer;
+      transition: transform .14s ease, filter .14s ease, box-shadow .14s ease, background .14s ease;
+      box-shadow: 0 12px 24px rgba(125,211,252,.13);
+      color:#08111f;
+      background: linear-gradient(135deg, #bfefff, #d7d0ff);
+    }
+    .btn:hover{transform: translateY(-1px);filter:brightness(1.03)}
+    .btn.secondary{
+      color: var(--text);
+      background: rgba(255,255,255,.08);
+      box-shadow: none;
+      border: 1px solid rgba(255,255,255,.12);
+    }
+    .btn.secondary:hover{background: rgba(255,255,255,.12)}
+    .btn.good{
+      color:#05121a;
+      background: linear-gradient(135deg, rgba(83,227,166,.98), rgba(141,220,255,.92));
+    }
+    .btn.danger{
+      color:#fff;
+      background: rgba(255,122,122,.14);
+      border: 1px solid rgba(255,122,122,.25);
+      box-shadow: none;
+    }
+    .nav{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 10px;
+      padding: 18px 28px 0;
+    }
+    .tab-btn{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      color: var(--muted);
+      padding: 12px 16px;
+      border-radius: 999px;
+      cursor:pointer;
+      font-weight:800;
+      transition: .15s ease;
+    }
+    .tab-btn:hover{transform: translateY(-1px); color:#fff; background: rgba(255,255,255,.08)}
+    .tab-btn.active{
+      color:#07111f;
+      background: linear-gradient(135deg, #e7fbff, #ece4ff);
+      border-color: transparent;
+      box-shadow: 0 10px 30px rgba(141,220,255,.12);
+    }
+    .content{padding: 22px 28px 28px}
+    .panel{display:none; animation: fade .22s ease}
+    .panel.active-panel{display:block}
+    @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 18px;
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.05));
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: 0 10px 28px rgba(0,0,0,.14);
+    }
+    .span-12{grid-column: span 12}
+    .span-8{grid-column: span 8}
+    .span-7{grid-column: span 7}
+    .span-6{grid-column: span 6}
+    .span-5{grid-column: span 5}
+    .span-4{grid-column: span 4}
+    .span-3{grid-column: span 3}
+    @media (max-width: 1100px){
+      .span-8,.span-7,.span-6,.span-5,.span-4,.span-3{grid-column: span 12}
+    }
+    .section-title{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom: 16px;
+    }
+    .section-title h3{
+      font-size: 1.3rem;
+      margin-bottom: 6px;
+      letter-spacing:-.02em;
+    }
+    .section-title p{color: var(--muted); font-size:.96rem; line-height:1.6}
+    .stats{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .metric{
+      grid-column: span 3;
+      min-width: 180px;
+      padding: 16px 16px 15px;
+      border-radius: 22px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    @media (max-width: 900px){ .metric{grid-column: span 6} }
+    @media (max-width: 600px){ .metric{grid-column: span 12} }
+    .metric .label{
+      color:var(--muted);
+      font-size:.86rem;
+      margin-bottom:8px;
+    }
+    .metric .value{
+      font-size:1.55rem;
+      font-weight:900;
+      letter-spacing:-.03em;
+      margin-bottom: 6px;
+    }
+    .metric .sub{
+      color:var(--muted-2);
+      font-size:.88rem;
+      line-height:1.5;
+    }
+    .progress{
+      width:100%;
+      height: 12px;
+      border-radius:999px;
+      overflow:hidden;
+      background: rgba(255,255,255,.08);
+      margin-top: 12px;
+    }
+    .progress > div{
+      height:100%;
+      width:0%;
+      border-radius:999px;
+      background: linear-gradient(90deg, var(--good), var(--accent), var(--accent-2));
+      transition: width .25s ease;
+    }
+    .form-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      margin-top: 10px;
+    }
+    input, select, textarea{
+      width:auto;
+      min-height: 48px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(7,12,24,.52);
+      color: var(--text);
+      padding: 12px 14px;
+      outline:none;
+      font-size: .97rem;
+    }
+    textarea{min-height: 96px; resize: vertical}
+    input::placeholder, textarea::placeholder{color:#8d9fc4}
+    input:focus, select:focus, textarea:focus{
+      border-color: rgba(141,220,255,.78);
+      box-shadow: 0 0 0 3px rgba(141,220,255,.12);
+    }
+    .grow-1{flex:1; min-width: 160px}
+    .grow-2{flex:2; min-width: 220px}
+    .grow-3{flex:3; min-width: 260px}
+    .grow-4{flex:4; min-width: 320px}
+    .list{
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .item{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap: 12px;
+      flex-wrap:wrap;
+      padding: 15px 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .item-left{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      min-width: 240px;
+      flex:1;
+    }
+    .checkbox{
+      width:18px;
+      height:18px;
+      margin-top: 3px;
+      accent-color: #8ddcff;
+      transform: translateY(1px);
+      flex:0 0 auto;
+    }
+    .task-title{
+      font-weight:800;
+      font-size: 1rem;
+      line-height: 1.4;
+      letter-spacing:-.01em;
+    }
+    .task-title.big{font-size:1.03rem}
+    .strike{text-decoration: line-through; opacity:.68}
+    .chip-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top: 8px;
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding: 6px 10px;
+      border-radius:999px;
+      background: rgba(141,220,255,.12);
+      color:#e8f7ff;
+      border:1px solid rgba(141,220,255,.15);
+      font-size:.8rem;
+      font-weight:800;
+      white-space:nowrap;
+    }
+    .chip.soft{
+      background: rgba(255,255,255,.07);
+      color:#edf3ff;
+      border-color: rgba(255,255,255,.08);
+    }
+    .chip.warn{
+      background: rgba(255,204,102,.13);
+      border-color: rgba(255,204,102,.18);
+      color:#fff0c5;
+    }
+    .chip.good{
+      background: rgba(99,230,190,.14);
+      border-color: rgba(99,230,190,.16);
+      color:#dbfff3;
+    }
+    .chip.danger{
+      background: rgba(255,122,122,.12);
+      border-color: rgba(255,122,122,.15);
+      color:#ffd8d8;
+    }
+    .actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .mini-btn{
+      border:none;
+      border-radius: 14px;
+      padding: 10px 12px;
+      cursor:pointer;
+      background: rgba(255,255,255,.08);
+      color: var(--text);
+      font-weight:800;
+      transition: .14s ease;
+    }
+    .mini-btn:hover{background: rgba(255,255,255,.12)}
+    .mini-btn.danger{background: rgba(255,122,122,.16); color:#ffd7d7}
+    .mini-btn.good{background: rgba(99,230,190,.15); color:#e2fff5}
+    .mini-btn.primary{background: linear-gradient(135deg, rgba(141,220,255,.92), rgba(179,157,255,.92)); color:#08111f}
+    .mini-btn.icon{
+      width:42px;
+      height:42px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:0;
+      font-size: 1.2rem;
+      line-height:1;
+    }
+    .group-title{
+      margin: 8px 0 10px;
+      font-size: 1.02rem;
+      color:#fff;
+      letter-spacing:-.02em;
+    }
+    .table-wrap{
+      overflow:auto;
+      border-radius: 20px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+    }
+    table{
+      width:100%;
+      border-collapse: collapse;
+      min-width: 720px;
+      background: transparent;
+    }
+    th,td{
+      text-align:left;
+      padding: 14px 14px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      color: var(--text);
+      vertical-align: top;
+    }
+    th{
+      color:#d9e6ff;
+      font-size:.9rem;
+      background: rgba(255,255,255,.04);
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(10px);
+    }
+    td{color:#edf2ff}
+    .formula-grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 16px;
+    }
+    .formula-card{
+      grid-column: span 6;
+      padding: 20px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.05));
+      border:1px solid rgba(255,255,255,.10);
+    }
+    @media (max-width: 900px){ .formula-card{grid-column: span 12} }
+    .formula-card h4{
+      font-size: 1.05rem;
+      margin-bottom: 12px;
+      color:#ffffff;
+      letter-spacing:-.02em;
+    }
+    .formula-list{
+      display:grid;
+      gap:8px;
+      color: var(--text);
+    }
+    .formula-pill{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding: 11px 12px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.07);
+      line-height:1.6;
+    }
+    .k{
+      width:28px;
+      height:28px;
+      flex:0 0 28px;
+      border-radius: 10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      background: linear-gradient(135deg, rgba(141,220,255,.18), rgba(179,157,255,.18));
+      color:#fff;
+    }
+    .note{
+      color: var(--muted);
+      font-size: .93rem;
+      margin-top: 10px;
+      line-height:1.75;
+    }
+    .footbar{
+      padding: 16px 28px 26px;
+      color: var(--muted);
+      font-size: .9rem;
+      border-top:1px solid rgba(255,255,255,.08);
+      line-height:1.7;
+    }
+    .toast{
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      background: rgba(6,12,24,.94);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.12);
+      padding: 12px 16px;
+      border-radius: 16px;
+      box-shadow: 0 16px 40px rgba(0,0,0,.25);
+      opacity:0;
+      transform: translateY(8px);
+      pointer-events:none;
+      transition: .22s ease;
+      z-index: 9999;
+      max-width: min(560px, calc(100vw - 40px));
+      line-height:1.5;
+    }
+    .toast.show{opacity:1; transform: translateY(0)}
+    .muted{color:var(--muted)}
+    .tiny{font-size:.82rem}
+    .empty{
+      padding: 18px;
+      text-align:center;
+      color: var(--muted);
+      border: 1px dashed rgba(255,255,255,.14);
+      border-radius: 18px;
+      background: rgba(255,255,255,.03);
+      line-height:1.7;
+    }
+    .summary-grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .summary-card{
+      grid-column: span 4;
+      padding: 18px;
+      border-radius: 22px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    @media (max-width: 900px){ .summary-card{grid-column: span 12} }
+    .summary-card h4{
+      margin-bottom: 8px;
+      font-size: 1rem;
+      letter-spacing:-.02em;
+    }
+    .summary-card .big{
+      font-size: 1.9rem;
+      font-weight: 900;
+      letter-spacing: -.04em;
+      margin-bottom: 6px;
+    }
+    .summary-card .desc{color:var(--muted); line-height:1.6; font-size:.92rem}
+    .mini-bar{
+      margin-top: 10px;
+      width:100%;
+      height: 10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.08);
+      overflow:hidden;
+    }
+    .mini-bar > div{
+      height:100%;
+      width: 0%;
+      border-radius:999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--good));
+      transition: width .25s ease;
+    }
+    .days-grid{
+      display:grid;
+      grid-template-columns: repeat(12,1fr);
+      gap: 14px;
+    }
+    .day-card{
+      grid-column: span 6;
+      padding: 16px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    @media (max-width: 900px){ .day-card{grid-column: span 12} }
+    .day-card .title{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom: 10px;
+    }
+    .day-card .title h4{font-size:1rem; letter-spacing:-.02em}
+    .day-card .title span{color:var(--muted); font-size:.85rem}
+    .day-card input{width:100%}
+    .toast-day{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding: 6px 9px;
+      border-radius:999px;
+      font-size:.78rem;
+      background: rgba(141,220,255,.12);
+      border:1px solid rgba(141,220,255,.16);
+      color:#e8f8ff;
+      font-weight:800;
+    }
+    details.menu{
+      position: relative;
+    }
+    details.menu summary{
+      list-style:none;
+      cursor:pointer;
+      user-select:none;
+      width:42px;
+      height:42px;
+      border-radius: 14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: rgba(255,255,255,.08);
+      color: var(--text);
+      font-size: 1.15rem;
+      font-weight:900;
+    }
+    details.menu summary::-webkit-details-marker{display:none}
+    .menu-pop{
+      position:absolute;
+      right:0;
+      top: 48px;
+      min-width: 220px;
+      z-index: 20;
+      padding: 10px;
+      border-radius: 18px;
+      background: rgba(7,12,24,.98);
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow: 0 20px 40px rgba(0,0,0,.30);
+      display:grid;
+      gap: 8px;
+    }
+    .menu-pop button{
+      width:100%;
+      text-align:left;
+      border:none;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      font-weight:700;
+      cursor:pointer;
+    }
+    .menu-pop button:hover{background: rgba(255,255,255,.11)}
+    .flex-between{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      flex-wrap:wrap;
+    }
+    .kbd{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width: 28px;
+      height: 28px;
+      padding: 0 10px;
+      border-radius: 10px;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.08);
+      color: var(--text);
+      font-weight:800;
+      font-size:.82rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="hero">
+      <div class="hero-top">
+        <div class="brand">
+          <h1>📘 A/L Mastery Hub</h1>
+          <p>
+            A/L Maths, Chemistry, Physics එක්ක වැඩ කරනකොට use කරන්න පුළුවන් premium study dashboard එකක්.
+            To-do list, upcoming work, reminders, class timetable, weekly plan, work-hour log, සහ important formulas එකම තැනක.
+            Old sample data automatic clear වෙන නිසා, ඔබ දැන් enter කරන data විතරක් save වෙනවා.
+          </p>
+        </div>
+        <div class="hero-actions">
+          <div class="pill" id="globalStats">✨ Progress: <strong>0%</strong></div>
+          <button class="btn secondary" id="resetAllBtn">🧹 Clear All Saved Data</button>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="metric">
+          <div class="label">Today’s To-Do</div>
+          <div class="value" id="statTodo">0</div>
+          <div class="sub">Incomplete tasks that stay until you finish them</div>
+        </div>
+        <div class="metric">
+          <div class="label">Today’s Study Hours</div>
+          <div class="value" id="statHours">0.0 h</div>
+          <div class="sub" id="statStars">No hours logged yet</div>
+        </div>
+        <div class="metric">
+          <div class="label">Due Today</div>
+          <div class="value" id="statReminder">0</div>
+          <div class="sub">Revision reminders for today</div>
+        </div>
+        <div class="metric">
+          <div class="label">Weekly Plan Ready</div>
+          <div class="value" id="statWeekly">7/7</div>
+          <div class="sub">All days manually customizable</div>
+        </div>
+      </div>
+    </section>
+
+    <nav class="nav">
+      <button class="tab-btn active" data-tab="dashboard">🏠 Dashboard</button>
+      <button class="tab-btn" data-tab="todo">📋 To-Do</button>
+      <button class="tab-btn" data-tab="upcoming">⏳ Upcoming Work</button>
+      <button class="tab-btn" data-tab="reminders">🔔 Reminders</button>
+      <button class="tab-btn" data-tab="hours">⭐ Study Hours</button>
+      <button class="tab-btn" data-tab="schedule">🗓️ Timetable</button>
+      <button class="tab-btn" data-tab="weekly">📅 Weekly Plan</button>
+      <button class="tab-btn" data-tab="formulas">⚡ Formulas</button>
+    </nav>
+
+    <main class="content">
+      <section id="dashboardPanel" class="panel active-panel">
+        <div class="grid">
+          <div class="card span-12">
+            <div class="section-title">
+              <div>
+                <h3>✨ Student Dashboard</h3>
+                <p>මෙතනින් ඔයාගේ study flow එකක් glance එකෙන්ම බලාගන්න පුළුවන්. Numbers හැමදාම auto update වෙයි.</p>
+              </div>
+            </div>
+
+            <div class="summary-grid">
+              <div class="summary-card">
+                <h4>✅ Finished vs Pending</h4>
+                <div class="big" id="dashProgress">0%</div>
+                <div class="desc">To-do completion rate for your current list.</div>
+                <div class="mini-bar"><div id="dashProgressBar"></div></div>
+              </div>
+              <div class="summary-card">
+                <h4>🧠 Focus Count</h4>
+                <div class="big" id="dashFocus">0</div>
+                <div class="desc">Unfinished tasks that remain visible until completed.</div>
+              </div>
+              <div class="summary-card">
+                <h4>⏰ Today’s Hours</h4>
+                <div class="big" id="dashHours">0.0</div>
+                <div class="desc" id="dashHoursDesc">No sessions logged today yet.</div>
+              </div>
+            </div>
+
+            <div class="summary-grid" style="margin-top:18px;">
+              <div class="summary-card">
+                <h4>📌 Quick Tip</h4>
+                <div class="desc" style="font-size:.98rem;color:#eef4ff">
+                  Start with one hard subject block first, then finish the lighter tasks. Momentum is better than perfection.
+                </div>
+              </div>
+              <div class="summary-card">
+                <h4>🔔 Today’s Reminders</h4>
+                <div class="big" id="dashDue">0</div>
+                <div class="desc">Revision reminders that are due for today.</div>
+              </div>
+              <div class="summary-card">
+                <h4>📅 Weekly Plan</h4>
+                <div class="big">7</div>
+                <div class="desc">One manual entry for each day of the week.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="todoPanel" class="panel">
+        <div class="grid">
+          <div class="card span-12">
+            <div class="section-title">
+              <div>
+                <h3>✅ To-Do List</h3>
+                <p>No date field here. Add tasks manually, check them off, and they stay until completed.</p>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <input type="text" id="taskTitle" class="grow-3" placeholder="Task title (e.g., Integration practice)" />
+              <select id="taskSubject" class="grow-1">
+                <option value="Maths">📐 Maths</option>
+                <option value="Chemistry">🧪 Chemistry</option>
+                <option value="Physics">⚛️ Physics</option>
+                <option value="General">📘 General</option>
+              </select>
+              <button class="btn" id="addTaskBtn">+ Add Task</button>
+            </div>
+
+            <div class="list" id="todoListContainer"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="upcomingPanel" class="panel">
+        <div class="grid">
+          <div class="card span-12">
+            <div class="section-title">
+              <div>
+                <h3>⏳ Upcoming Work</h3>
+                <p>Here you can keep subject-wise work without a date field. Use the three-dot menu to move it to another day.</p>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <input type="text" id="upTitle" class="grow-3" placeholder="Upcoming work title" />
+              <select id="upSubject" class="grow-1">
+                <option value="Maths">📐 Maths</option>
+                <option value="Chemistry">🧪 Chemistry</option>
+                <option value="Physics">⚛️ Physics</option>
+                <option value="General">📘 General</option>
+              </select>
+              <select id="upDay" class="grow-1">
+                <option value="Today">Today</option>
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                <option value="Saturday">Saturday</option>
+                <option value="Sunday">Sunday</option>
+              </select>
+              <button class="btn" id="addUpcomingBtn">📎 Add Upcoming</button>
+            </div>
+
+            <div class="list" id="upcomingGroups"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="remindersPanel" class="panel">
+        <div class="grid">
+          <div class="card span-12">
+            <div class="section-title">
+              <div>
+                <h3>🔔 Revision Reminders</h3>
+                <p>Date is important here, so the reminder can automatically appear on the correct day.</p>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <input type="text" id="remTitle" class="grow-3" placeholder="Reminder text (e.g., Mechanics revision)" />
+              <select id="remSubject" class="grow-1">
+                <option value="Maths">Maths</option>
+                <option value="Chemistry">Chemistry</option>
+                <option value="Physics">Physics</option>
+              </select>
+              <input type="date" id="remDate" class="grow-1" />
+              <button class="btn" id="addReminderBtn">Set Reminder</button>
+            </div>
+
+            <div class="list" id="remindersList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="hoursPanel" class="panel">
+        <div class="grid">
+          <div class="card span-12">
+            <div class="section-title">
+              <div>
+                <h3>⭐ Study Hours Log</h3>
+                <p>Enter start and end time manually. The system calculates the hours and updates today’s dashboard automatically.</p>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <input type="date" id="hourDate" class="grow-1" />
+              <select id="hourSubject" class="grow-1">
+                <option value="Maths">📐 Maths</option>
+                <option value="Chemistry">🧪 Chemistry</option>
+                <option value="Physics">⚛️ Physics</option>
+                <option value="General">📘 General</option>
+              </select>
+              <input type="time" id="hourStart" class="grow-1" />
+              <input type="time" id="hourEnd" class="grow-1" />
+              <input type="text" id="hourNotes" class="grow-3" placeholder="Notes (optional)" />
+              <button class="btn good" id="addHourBtn">Log Hours</button>
+            </div>
+
+            <div class="summary-grid" style="margin-top:16px;">
+              <div class="summary-card">
+                <h4>Today’s Study Hours</h4>
+                <div class="big" id="hoursTodayBig">0.0 h</div>
+                <div class="desc" id="hoursTodayDesc">No logged sessions today.</div>
+              </div>
+              <div class="summary-card">
+                <h4>Star Meter</h4>
+                <div class="big" id="hoursStars">☆</div>
+                <div class="desc">One star for each rounded hour block.</div>
+              </div>
+              <div class="summary-card">
+                <h4>All Sessions</h4>
+                <div class="big" id="hoursCount">0</div>
+                <div class="desc">Manual study logs saved in the browser.</div>
+              </div>
+            </div>
+
+            <div class="list" id="hoursList" style="margin-top:18px;"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="schedulePanel" class="panel">
+        <div class="grid">
+          <div class="card span-12">
+            <div class="section-title">
+              <div>
+                <h3>📖 Class Timetable</h3>
+                <p>Manual weekly class slots. Table view keeps it neat and readable.</p>
+              </div>
+            </div>
+            <div class="form-row">
+              <select id="classSubject" class="grow-1">
+                <option>Maths</option>
+                <option>Chemistry</option>
+                <option>Physics</option>
+              </select>
+              <select id="classDay" class="grow-1">
+                <option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option>
+                <option>Friday</option><option>Saturday</option><option>Sunday</option>
+              </select>
+              <input type="text" id="classTime" class="grow-2" placeholder="e.g., 8:00 AM - 10:00 AM" />
+              <button class="btn" id="addClassBtn">+ Add Class</button>
+            </div>
+            <div class="table-wrap" style="margin-top:16px;">
+              <table id="scheduleTable">
+                <thead>
+                  <tr>
+                    <th>Subject</th>
+                    <th>Day</th>
+                    <th>Time</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="weeklyPanel" class="panel">
+        <div class="grid">
+          <div class="card span-12">
+            <div class="section-title">
+              <div>
+                <h3>📅 7-Day Work Plan</h3>
+                <p>Every day is editable manually. Save once and it updates instantly.</p>
+              </div>
+            </div>
+            <div id="weeklyPlanGrid" class="days-grid"></div>
+            <button class="btn" id="saveWeeklyPlanBtn" style="margin-top:16px;">💾 Save Weekly Plan</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="formulasPanel" class="panel">
+        <div class="grid">
+          <div class="card span-12">
+            <div class="section-title">
+              <div>
+                <h3>⚡ Important Formulas</h3>
+                <p>Premium quick-reference cards for Maths, Trigonometry, and triangle work.</p>
+              </div>
+            </div>
+
+            <div class="formula-grid">
+              <div class="formula-card">
+                <h4>📐 Core Identities</h4>
+                <div class="formula-list">
+                  <div class="formula-pill"><div class="k">1</div><div>sin²θ + cos²θ = 1</div></div>
+                  <div class="formula-pill"><div class="k">2</div><div>1 + tan²θ = sec²θ</div></div>
+                  <div class="formula-pill"><div class="k">3</div><div>1 + cot²θ = csc²θ</div></div>
+                </div>
+              </div>
+
+              <div class="formula-card">
+                <h4>🔁 Compound Angle Formulas</h4>
+                <div class="formula-list">
+                  <div class="formula-pill"><div class="k">1</div><div>sin(A ± B) = sinA cosB ± cosA sinB</div></div>
+                  <div class="formula-pill"><div class="k">2</div><div>cos(A ± B) = cosA cosB ∓ sinA sinB</div></div>
+                  <div class="formula-pill"><div class="k">3</div><div>tan(A ± B) = (tanA ± tanB) / (1 ∓ tanA tanB)</div></div>
+                </div>
+              </div>
+
+              <div class="formula-card">
+                <h4>2θ, 3θ & Half-Angle</h4>
+                <div class="formula-list">
+                  <div class="formula-pill"><div class="k">1</div><div>sin 2θ = 2 sinθ cosθ</div></div>
+                  <div class="formula-pill"><div class="k">2</div><div>cos 2θ = cos²θ − sin²θ = 2cos²θ − 1 = 1 − 2sin²θ</div></div>
+                  <div class="formula-pill"><div class="k">3</div><div>tan 2θ = 2tanθ / (1 − tan²θ)</div></div>
+                  <div class="formula-pill"><div class="k">4</div><div>t = tan(θ/2) → sinθ = 2t/(1+t²), cosθ = (1−t²)/(1+t²)</div></div>
+                </div>
+              </div>
+
+              <div class="formula-card">
+                <h4>3θ & Product / Sum</h4>
+                <div class="formula-list">
+                  <div class="formula-pill"><div class="k">1</div><div>sin 3θ = 3sinθ − 4sin³θ</div></div>
+                  <div class="formula-pill"><div class="k">2</div><div>cos 3θ = 4cos³θ − 3cosθ</div></div>
+                  <div class="formula-pill"><div class="k">3</div><div>tan 3θ = (3tanθ − tan³θ) / (1 − 3tan²θ)</div></div>
+                  <div class="formula-pill"><div class="k">4</div><div>2sinA cosB = sin(A+B) + sin(A−B)</div></div>
+                </div>
+              </div>
+
+              <div class="formula-card">
+                <h4>🧭 General Solutions</h4>
+                <div class="formula-list">
+                  <div class="formula-pill"><div class="k">1</div><div>sinθ = sinα ⇒ θ = nπ + (−1)ⁿα</div></div>
+                  <div class="formula-pill"><div class="k">2</div><div>cosθ = cosα ⇒ θ = 2nπ ± α</div></div>
+                  <div class="formula-pill"><div class="k">3</div><div>tanθ = tanα ⇒ θ = nπ + α</div></div>
+                </div>
+              </div>
+
+              <div class="formula-card">
+                <h4>📌 Sine & Cosine Rules</h4>
+                <div class="formula-list">
+                  <div class="formula-pill"><div class="k">1</div><div>Sine Rule: a/sinA = b/sinB = c/sinC = 2R</div></div>
+                  <div class="formula-pill"><div class="k">2</div><div>Cosine Rule: a² = b² + c² − 2bc cosA</div></div>
+                  <div class="formula-pill"><div class="k">3</div><div>Area of triangle = ½bc sinA</div></div>
+                </div>
+              </div>
+
+              <div class="formula-card">
+                <h4>🔺 Special Triangle Ratios</h4>
+                <div class="formula-list">
+                  <div class="formula-pill"><div class="k">1</div><div>45°–45°–90° triangle → side ratio 1 : 1 : √2</div></div>
+                  <div class="formula-pill"><div class="k">2</div><div>30°–60°–90° triangle → side ratio 1 : √3 : 2</div></div>
+                  <div class="formula-pill"><div class="k">3</div><div>Heron’s formula: Area = √[s(s−a)(s−b)(s−c)]</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" style="margin-top:18px; background: rgba(255,255,255,.05);">
+              <h4 style="margin-bottom:12px;">📐 Common Trigonometric Values</h4>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>කෝණය (θ)</th>
+                      <th>sin(θ)</th>
+                      <th>cos(θ)</th>
+                      <th>tan(θ)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>0°</td><td>0</td><td>1</td><td>0</td></tr>
+                    <tr><td>15°</td><td>(√6 − √2) / 4</td><td>(√6 + √2) / 4</td><td>2 − √3</td></tr>
+                    <tr><td>30°</td><td>1/2</td><td>√3 / 2</td><td>1/√3</td></tr>
+                    <tr><td>45°</td><td>1/√2</td><td>1/√2</td><td>1</td></tr>
+                    <tr><td>60°</td><td>√3 / 2</td><td>1/2</td><td>√3</td></tr>
+                    <tr><td>90°</td><td>1</td><td>0</td><td>Undefined</td></tr>
+                    <tr><td>120°</td><td>√3 / 2</td><td>−1/2</td><td>−√3</td></tr>
+                    <tr><td>180°</td><td>0</td><td>−1</td><td>0</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="note">
+                90° හිදී tan(θ) = sin(90°)/cos(90°) = 1/0 නිසා ඒක Undefined ලෙස සලකනවා.
+                Exam writing වලදී <span class="kbd">Undefined</span> කියලා දාන්න පුළුවන්.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footbar">
+      This version clears old demo data on first run and uses new storage keys from now on. Only items you add now are saved.
+    </footer>
+  </div>
+
+  <div class="toast" id="toastMessage">✨ Action complete</div>
+
+  <script>
+    const STORAGE_KEYS = {
+      todo: 'al_todo_tasks_v3',
+      upcoming: 'al_upcoming_tasks_v3',
+      reminders: 'al_reminders_v3',
+      schedule: 'al_class_schedule_v3',
+      weekly: 'al_weekly_plan_v3',
+      hours: 'al_hours_log_v3',
+      migrated: 'al_mastery_hub_migrated_v3'
+    };
+
+    let todoTasks = [];      // { id, title, subject, completed, createdAt, completedAt }
+    let upcomingTasks = [];  // { id, title, subject, day }
+    let reminders = [];      // { id, title, subject, reminderDate }
+    let classSchedule = [];  // { id, subject, day, time }
+    let weeklyPlan = ["Maths & Physics", "Chemistry", "Maths & Chem", "Physics", "Maths", "Chemistry & Physics", "Revision"];
+    let hoursLog = [];       // { id, date, subject, start, end, notes, hours }
+
+    const subjectIcon = {
+      Maths: '📐',
+      Chemistry: '🧪',
+      Physics: '⚛️',
+      General: '📘'
+    };
+
+    function uid() {
+      return Date.now() + Math.floor(Math.random() * 1000000);
+    }
+
+    function escapeHtml(str) {
+      return (str ?? '').toString()
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function todayISO() {
+      return new Date().toISOString().slice(0, 10);
+    }
+
+    function toMinutes(time) {
+      if (!time || !/^\d{2}:\d{2}$/.test(time)) return null;
+      const [h, m] = time.split(':').map(Number);
+      return h * 60 + m;
+    }
+
+    function diffHours(start, end) {
+      const s = toMinutes(start);
+      const e = toMinutes(end);
+      if (s === null || e === null) return null;
+      let diff = e - s;
+      if (diff < 0) diff += 24 * 60;
+      return +(diff / 60).toFixed(2);
+    }
+
+    function dayNameFromISO(dateStr) {
+      const d = new Date(dateStr + 'T00:00:00');
+      return d.toLocaleDateString('en-US', { weekday: 'long' });
+    }
+
+    function showToast(msg, duration = 2600) {
+      const toast = document.getElementById('toastMessage');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => toast.classList.remove('show'), duration);
+    }
+
+    function clearLegacyStorage() {
+      const oldKeys = [
+        'al_todo_tasks',
+        'al_upcoming_tasks',
+        'al_reminders',
+        'al_class_schedule',
+        'al_weekly_plan',
+        'al_todo_tasks_v2',
+        'al_upcoming_tasks_v2',
+        'al_reminders_v2',
+        'al_class_schedule_v2',
+        'al_weekly_plan_v2',
+        'al_mastery_hub_migrated_v2'
+      ];
+      oldKeys.forEach(k => localStorage.removeItem(k));
+    }
+
+    function saveAllData() {
+      localStorage.setItem(STORAGE_KEYS.todo, JSON.stringify(todoTasks));
+      localStorage.setItem(STORAGE_KEYS.upcoming, JSON.stringify(upcomingTasks));
+      localStorage.setItem(STORAGE_KEYS.reminders, JSON.stringify(reminders));
+      localStorage.setItem(STORAGE_KEYS.schedule, JSON.stringify(classSchedule));
+      localStorage.setItem(STORAGE_KEYS.weekly, JSON.stringify(weeklyPlan));
+      localStorage.setItem(STORAGE_KEYS.hours, JSON.stringify(hoursLog));
+      localStorage.setItem(STORAGE_KEYS.migrated, '1');
+    }
+
+    function loadAllData() {
+      if (!localStorage.getItem(STORAGE_KEYS.migrated)) {
+        clearLegacyStorage();
+        localStorage.setItem(STORAGE_KEYS.migrated, '1');
+      }
+
+      try {
+        todoTasks = JSON.parse(localStorage.getItem(STORAGE_KEYS.todo) || '[]');
+        upcomingTasks = JSON.parse(localStorage.getItem(STORAGE_KEYS.upcoming) || '[]');
+        reminders = JSON.parse(localStorage.getItem(STORAGE_KEYS.reminders) || '[]');
+        classSchedule = JSON.parse(localStorage.getItem(STORAGE_KEYS.schedule) || '[]');
+        weeklyPlan = JSON.parse(localStorage.getItem(STORAGE_KEYS.weekly) || '["Maths & Physics","Chemistry","Maths & Chem","Physics","Maths","Chemistry & Physics","Revision"]');
+        hoursLog = JSON.parse(localStorage.getItem(STORAGE_KEYS.hours) || '[]');
+
+        todoTasks = todoTasks.map(t => ({
+          id: t.id ?? uid(),
+          title: (t.title ?? '').toString(),
+          subject: t.subject ?? 'General',
+          completed: !!t.completed,
+          createdAt: t.createdAt ?? todayISO(),
+          completedAt: t.completedAt ?? null
+        })).filter(t => t.title.trim());
+
+        upcomingTasks = upcomingTasks.map(u => ({
+          id: u.id ?? uid(),
+          title: (u.title ?? '').toString(),
+          subject: u.subject ?? 'General',
+          day: u.day ?? 'Today'
+        })).filter(u => u.title.trim());
+
+        reminders = reminders.map(r => ({
+          id: r.id ?? uid(),
+          title: (r.title ?? '').toString(),
+          subject: r.subject ?? 'General',
+          reminderDate: r.reminderDate ?? todayISO()
+        })).filter(r => r.title.trim());
+
+        classSchedule = classSchedule.map(c => ({
+          id: c.id ?? uid(),
+          subject: c.subject ?? 'Maths',
+          day: c.day ?? 'Monday',
+          time: (c.time ?? '').toString()
+        })).filter(c => c.time.trim());
+
+        weeklyPlan = Array.isArray(weeklyPlan) ? weeklyPlan.slice(0,7) : [];
+        while (weeklyPlan.length < 7) weeklyPlan.push('');
+        weeklyPlan = weeklyPlan.slice(0,7);
+
+        hoursLog = hoursLog.map(h => ({
+          id: h.id ?? uid(),
+          date: h.date ?? todayISO(),
+          subject: h.subject ?? 'General',
+          start: h.start ?? '00:00',
+          end: h.end ?? '00:00',
+          notes: h.notes ?? '',
+          hours: typeof h.hours === 'number' ? h.hours : (diffHours(h.start, h.end) ?? 0)
+        })).filter(h => h.date && h.start && h.end);
+      } catch (e) {
+        todoTasks = [];
+        upcomingTasks = [];
+        reminders = [];
+        classSchedule = [];
+        weeklyPlan = ["Maths & Physics", "Chemistry", "Maths & Chem", "Physics", "Maths", "Chemistry & Physics", "Revision"];
+        hoursLog = [];
+      }
+    }
+
+    function calcDashboard() {
+      const total = todoTasks.length;
+      const completed = todoTasks.filter(t => t.completed).length;
+      const percent = total ? Math.round((completed / total) * 100) : 0;
+      const dueToday = reminders.filter(r => r.reminderDate === todayISO()).length;
+      const todayHours = hoursLog.filter(h => h.date === todayISO()).reduce((sum, h) => sum + (Number(h.hours) || 0), 0);
+
+      document.getElementById('globalStats').innerHTML = `✨ Progress: <strong>${percent}%</strong>`;
+      document.getElementById('dashProgress').textContent = percent + '%';
+      document.getElementById('dashProgressBar').style.width = percent + '%';
+      document.getElementById('dashFocus').textContent = String(total - completed);
+      document.getElementById('dashHours').textContent = todayHours.toFixed(1);
+      document.getElementById('dashHoursDesc').textContent = todayHours ? `You logged ${todayHours.toFixed(1)} hours today.` : 'No sessions logged today yet.';
+      document.getElementById('dashDue').textContent = String(dueToday);
+
+      document.getElementById('statTodo').textContent = String(total - completed);
+      document.getElementById('statHours').textContent = `${todayHours.toFixed(1)} h`;
+      document.getElementById('statReminder').textContent = String(dueToday);
+      document.getElementById('statWeekly').textContent = `${weeklyPlan.filter(Boolean).length}/7`;
+      document.getElementById('hoursTodayBig').textContent = `${todayHours.toFixed(1)} h`;
+      document.getElementById('hoursTodayDesc').textContent = todayHours ? `Great. ${hoursLog.filter(h => h.date === todayISO()).length} session(s) logged today.` : 'No logged sessions today.';
+      const stars = Math.max(1, Math.min(12, Math.round(todayHours))) ;
+      document.getElementById('hoursStars').textContent = todayHours ? '⭐'.repeat(stars) : '☆';
+      document.getElementById('hoursCount').textContent = String(hoursLog.length);
+      document.getElementById('hoursTodayDesc').textContent = todayHours ? `${hoursLog.filter(h => h.date === todayISO()).length} session(s) today, keep going.` : 'No logged sessions today.';
+      document.getElementById('statStars').textContent = todayHours ? `Around ${stars} star block(s) today` : 'No hours logged yet';
+    }
+
+    function renderTodoList() {
+      const container = document.getElementById('todoListContainer');
+      if (!todoTasks.length) {
+        container.innerHTML = `<div class="empty">No tasks yet. Add a task above and keep it in the list until you finish it.</div>`;
+        calcDashboard();
+        return;
+      }
+
+      container.innerHTML = todoTasks.map(task => `
+        <div class="item">
+          <div class="item-left">
+            <input class="checkbox task-checkbox" type="checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+            <div>
+              <div class="task-title ${task.completed ? 'strike' : ''}">${escapeHtml(task.title)}</div>
+              <div class="chip-row">
+                <span class="chip">${escapeHtml(subjectIcon[task.subject] || '📘')} ${escapeHtml(task.subject)}</span>
+                ${task.completed ? '<span class="chip good">Completed</span>' : '<span class="chip warn">Pending</span>'}
+              </div>
+            </div>
+          </div>
+          <div class="actions">
+            <button class="mini-btn danger del-task-btn" data-id="${task.id}">🗑️ Delete</button>
+          </div>
+        </div>
+      `).join('');
+
+      container.querySelectorAll('.task-checkbox').forEach(cb => {
+        cb.addEventListener('change', () => {
+          const id = Number(cb.dataset.id);
+          const task = todoTasks.find(t => t.id === id);
+          if (!task) return;
+          task.completed = cb.checked;
+          task.completedAt = cb.checked ? todayISO() : null;
+          saveAllData();
+          renderTodoList();
+          calcDashboard();
+          showToast(cb.checked ? 'Task completed.' : 'Task marked pending.');
+        });
+      });
+
+      container.querySelectorAll('.del-task-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = Number(btn.dataset.id);
+          todoTasks = todoTasks.filter(t => t.id !== id);
+          saveAllData();
+          renderTodoList();
+          calcDashboard();
+          showToast('Task deleted.');
+        });
+      });
+
+      calcDashboard();
+    }
+
+    function renderUpcoming() {
+      const container = document.getElementById('upcomingGroups');
+      const subjects = ['Maths', 'Chemistry', 'Physics', 'General'];
+
+      let html = '';
+      subjects.forEach(sub => {
+        const items = upcomingTasks.filter(x => x.subject === sub);
+        html += `<div>
+          <h4 class="group-title">${subjectIcon[sub] || '📘'} ${sub} <span class="muted">(${items.length})</span></h4>
+          <div class="list">`;
+
+        if (!items.length) {
+          html += `<div class="empty">No upcoming work for ${sub}.</div>`;
+        } else {
+          items.forEach(up => {
+            html += `
+              <div class="item">
+                <div class="item-left">
+                  <div>
+                    <div class="task-title big">${escapeHtml(up.title)}</div>
+                    <div class="chip-row">
+                      <span class="chip soft">${escapeHtml(sub)}</span>
+                      <span class="chip ${up.day === 'Today' ? 'good' : 'soft'}">Due: ${escapeHtml(up.day)}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="actions">
+                  <button class="mini-btn primary move-todo-btn" data-id="${up.id}">➕ To-Do</button>
+                  <details class="menu">
+                    <summary title="Move to another day">⋮</summary>
+                    <div class="menu-pop">
+                      ${['Today','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'].map(day => `
+                        <button type="button" class="move-day-btn" data-id="${up.id}" data-day="${day}">${day}</button>
+                      `).join('')}
+                    </div>
+                  </details>
+                  <button class="mini-btn danger del-upcoming-btn" data-id="${up.id}">Delete</button>
+                </div>
+              </div>
+            `;
+          });
+        }
+
+        html += `</div></div>`;
+      });
+
+      container.innerHTML = html;
+
+      container.querySelectorAll('.move-todo-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = Number(btn.dataset.id);
+          const item = upcomingTasks.find(x => x.id === id);
+          if (!item) return;
+          todoTasks.push({ id: uid(), title: item.title, subject: item.subject, completed: false, createdAt: todayISO(), completedAt: null });
+          upcomingTasks = upcomingTasks.filter(x => x.id !== id);
+          saveAllData();
+          renderTodoList();
+          renderUpcoming();
+          calcDashboard();
+          showToast('Moved to To-Do list.');
+        });
+      });
+
+      container.querySelectorAll('.move-day-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = Number(btn.dataset.id);
+          const day = btn.dataset.day;
+          const item = upcomingTasks.find(x => x.id === id);
+          if (!item) return;
+          item.day = day;
+          saveAllData();
+          renderUpcoming();
+          showToast(`Moved to ${day}.`);
+        });
+      });
+
+      container.querySelectorAll('.del-upcoming-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = Number(btn.dataset.id);
+          upcomingTasks = upcomingTasks.filter(x => x.id !== id);
+          saveAllData();
+          renderUpcoming();
+          calcDashboard();
+          showToast('Upcoming item deleted.');
+        });
+      });
+    }
+
+    function renderReminders() {
+      const container = document.getElementById('remindersList');
+      if (!reminders.length) {
+        container.innerHTML = `<div class="empty">No reminders yet. Add a reminder and it will show up on that date.</div>`;
+        return;
+      }
+
+      const today = todayISO();
+      container.innerHTML = reminders.map(rem => {
+        const isToday = rem.reminderDate === today;
+        return `
+          <div class="item">
+            <div class="item-left">
+              <div>
+                <div class="task-title">🔔 ${escapeHtml(rem.title)}</div>
+                <div class="chip-row">
+                  <span class="chip">${escapeHtml(subjectIcon[rem.subject] || '📘')} ${escapeHtml(rem.subject)}</span>
+                  <span class="chip ${isToday ? 'good' : 'soft'}">${isToday ? 'Due today' : escapeHtml(rem.reminderDate)}</span>
+                </div>
+              </div>
+            </div>
+            <div class="actions">
+              <button class="mini-btn danger del-reminder-btn" data-id="${rem.id}">Delete</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      container.querySelectorAll('.del-reminder-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = Number(btn.dataset.id);
+          reminders = reminders.filter(r => r.id !== id);
+          saveAllData();
+          renderReminders();
+          calcDashboard();
+          showToast('Reminder deleted.');
+        });
+      });
+    }
+
+    function renderHours() {
+      const container = document.getElementById('hoursList');
+      if (!hoursLog.length) {
+        container.innerHTML = `<div class="empty">No study sessions yet. Add start and end time to build your daily log.</div>`;
+        return;
+      }
+
+      const today = todayISO();
+      const todayHours = hoursLog.filter(h => h.date === today).reduce((sum, h) => sum + (Number(h.hours) || 0), 0);
+
+      container.innerHTML = hoursLog.slice().sort((a,b) => (b.date.localeCompare(a.date) || b.id - a.id)).map(h => {
+        const isToday = h.date === today;
+        return `
+          <div class="item">
+            <div class="item-left">
+              <div>
+                <div class="task-title big">${escapeHtml(h.date)} · ${escapeHtml(h.start)} - ${escapeHtml(h.end)}</div>
+                <div class="chip-row">
+                  <span class="chip">${escapeHtml(subjectIcon[h.subject] || '📘')} ${escapeHtml(h.subject)}</span>
+                  <span class="chip ${isToday ? 'good' : 'soft'}">${Number(h.hours).toFixed(2)} h</span>
+                  ${h.notes ? `<span class="chip soft">${escapeHtml(h.notes)}</span>` : ''}
+                </div>
+              </div>
+            </div>
+            <div class="actions">
+              <button class="mini-btn danger del-hour-btn" data-id="${h.id}">Delete</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      container.querySelectorAll('.del-hour-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = Number(btn.dataset.id);
+          hoursLog = hoursLog.filter(h => h.id !== id);
+          saveAllData();
+          renderHours();
+          calcDashboard();
+          showToast('Study log deleted.');
+        });
+      });
+
+      document.getElementById('hoursTodayBig').textContent = `${todayHours.toFixed(1)} h`;
+      document.getElementById('hoursTodayDesc').textContent = todayHours ? `You logged ${todayHours.toFixed(1)} hours today.` : 'No logged sessions today.';
+      const stars = Math.max(1, Math.min(12, Math.round(todayHours)));
+      document.getElementById('hoursStars').textContent = todayHours ? '⭐'.repeat(stars) : '☆';
+      document.getElementById('hoursCount').textContent = String(hoursLog.length);
+    }
+
+    function renderClassSchedule() {
+      const tbody = document.querySelector('#scheduleTable tbody');
+      if (!classSchedule.length) {
+        tbody.innerHTML = `<tr><td colspan="4" class="muted">No classes scheduled.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = classSchedule.map(sch => `
+        <tr>
+          <td>${escapeHtml(sch.subject)}</td>
+          <td>${escapeHtml(sch.day)}</td>
+          <td>${escapeHtml(sch.time)}</td>
+          <td><button class="mini-btn danger del-class-btn" data-id="${sch.id}">Remove</button></td>
+        </tr>
+      `).join('');
+
+      tbody.querySelectorAll('.del-class-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = Number(btn.dataset.id);
+          classSchedule = classSchedule.filter(c => c.id !== id);
+          saveAllData();
+          renderClassSchedule();
+          showToast('Class removed.');
+        });
+      });
+    }
+
+    function renderWeeklyPlan() {
+      const grid = document.getElementById('weeklyPlanGrid');
+      const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+
+      grid.innerHTML = days.map((day, idx) => `
+        <div class="day-card">
+          <div class="title">
+            <h4>${day}</h4>
+            <span>Day ${idx + 1}</span>
+          </div>
+          <input type="text" id="weekly_input_${idx}" value="${escapeHtml(weeklyPlan[idx] || '')}" placeholder="e.g., Physics + Maths" />
+        </div>
+      `).join('');
+    }
+
+    function addTask() {
+      const title = document.getElementById('taskTitle').value.trim();
+      const subject = document.getElementById('taskSubject').value;
+      if (!title) return showToast('Please enter a task title.');
+      todoTasks.push({ id: uid(), title, subject, completed: false, createdAt: todayISO(), completedAt: null });
+      saveAllData();
+      document.getElementById('taskTitle').value = '';
+      renderTodoList();
+      calcDashboard();
+      showToast('Task added.');
+    }
+
+    function addUpcoming() {
+      const title = document.getElementById('upTitle').value.trim();
+      const subject = document.getElementById('upSubject').value;
+      const day = document.getElementById('upDay').value;
+      if (!title) return showToast('Please enter upcoming work.');
+      upcomingTasks.push({ id: uid(), title, subject, day });
+      saveAllData();
+      document.getElementById('upTitle').value = '';
+      renderUpcoming();
+      calcDashboard();
+      showToast('Upcoming work added.');
+    }
+
+    function addReminder() {
+      const title = document.getElementById('remTitle').value.trim();
+      const subject = document.getElementById('remSubject').value;
+      const reminderDate = document.getElementById('remDate').value;
+      if (!title) return showToast('Enter reminder text.');
+      if (!reminderDate) return showToast('Select a date.');
+      reminders.push({ id: uid(), title, subject, reminderDate });
+      saveAllData();
+      document.getElementById('remTitle').value = '';
+      document.getElementById('remDate').value = '';
+      renderReminders();
+      calcDashboard();
+      showToast('Reminder set.');
+    }
+
+    function addClassEntry() {
+      const subject = document.getElementById('classSubject').value;
+      const day = document.getElementById('classDay').value;
+      const time = document.getElementById('classTime').value.trim();
+      if (!time) return showToast('Enter class time.');
+      classSchedule.push({ id: uid(), subject, day, time });
+      saveAllData();
+      document.getElementById('classTime').value = '';
+      renderClassSchedule();
+      showToast('Class added.');
+    }
+
+    function addHourLog() {
+      const date = document.getElementById('hourDate').value;
+      const subject = document.getElementById('hourSubject').value;
+      const start = document.getElementById('hourStart').value;
+      const end = document.getElementById('hourEnd').value;
+      const notes = document.getElementById('hourNotes').value.trim();
+
+      if (!date) return showToast('Select a date.');
+      if (!start || !end) return showToast('Enter start and end time.');
+      const hours = diffHours(start, end);
+      if (hours === null) return showToast('Invalid time values.');
+      if (hours === 0) return showToast('Start and end time cannot be the same.');
+
+      hoursLog.push({ id: uid(), date, subject, start, end, notes, hours });
+      saveAllData();
+      document.getElementById('hourNotes').value = '';
+      document.getElementById('hourStart').value = '';
+      document.getElementById('hourEnd').value = '';
+      renderHours();
+      calcDashboard();
+      showToast(`Logged ${hours.toFixed(2)} hours.`);
+    }
+
+    function saveWeeklyPlanFromUI() {
+      const next = [];
+      for (let i = 0; i < 7; i++) {
+        next.push((document.getElementById(`weekly_input_${i}`)?.value || '').trim());
+      }
+      weeklyPlan = next;
+      saveAllData();
+      calcDashboard();
+      showToast('Weekly plan saved.');
+    }
+
+    function resetAllData() {
+      Object.values(STORAGE_KEYS).forEach(k => localStorage.removeItem(k));
+      clearLegacyStorage();
+      todoTasks = [];
+      upcomingTasks = [];
+      reminders = [];
+      classSchedule = [];
+      weeklyPlan = ["Maths & Physics", "Chemistry", "Maths & Chem", "Physics", "Maths", "Chemistry & Physics", "Revision"];
+      hoursLog = [];
+      saveAllData();
+      renderTodoList();
+      renderUpcoming();
+      renderReminders();
+      renderHours();
+      renderClassSchedule();
+      renderWeeklyPlan();
+      calcDashboard();
+      showToast('All saved data cleared.');
+    }
+
+    function initTabs() {
+      const buttons = document.querySelectorAll('.tab-btn');
+      const panels = document.querySelectorAll('.panel');
+
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tabId = btn.dataset.tab;
+          buttons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          panels.forEach(p => p.classList.remove('active-panel'));
+          document.getElementById(`${tabId}Panel`).classList.add('active-panel');
+
+          if (tabId === 'dashboard') calcDashboard();
+          if (tabId === 'todo') renderTodoList();
+          if (tabId === 'upcoming') renderUpcoming();
+          if (tabId === 'reminders') renderReminders();
+          if (tabId === 'hours') renderHours();
+          if (tabId === 'schedule') renderClassSchedule();
+          if (tabId === 'weekly') renderWeeklyPlan();
+        });
+      });
+    }
+
+    function init() {
+      document.getElementById('hourDate').value = todayISO();
+      document.getElementById('remDate').value = todayISO();
+
+      loadAllData();
+      initTabs();
+
+      renderTodoList();
+      renderUpcoming();
+      renderReminders();
+      renderHours();
+      renderClassSchedule();
+      renderWeeklyPlan();
+      calcDashboard();
+
+      document.getElementById('addTaskBtn').addEventListener('click', addTask);
+      document.getElementById('addUpcomingBtn').addEventListener('click', addUpcoming);
+      document.getElementById('addReminderBtn').addEventListener('click', addReminder);
+      document.getElementById('addHourBtn').addEventListener('click', addHourLog);
+      document.getElementById('addClassBtn').addEventListener('click', addClassEntry);
+      document.getElementById('saveWeeklyPlanBtn').addEventListener('click', saveWeeklyPlanFromUI);
+      document.getElementById('resetAllBtn').addEventListener('click', resetAllData);
+
+      setInterval(() => {
+        calcDashboard();
+        const today = todayISO();
+        const dueCount = reminders.filter(r => r.reminderDate === today).length;
+        if (dueCount && document.getElementById('remindersPanel')?.classList.contains('active-panel')) {
+          showToast(`You have ${dueCount} reminder(s) due today.`, 3500);
+        }
+      }, 60000);
+
+      const midnightRefresh = () => {
+        const ms = new Date();
+        const next = new Date(ms);
+        next.setHours(24,0,0,0);
+        setTimeout(() => {
+          calcDashboard();
+          renderReminders();
+          renderHours();
+          midnightRefresh();
+        }, next - ms + 1000);
+      };
+      midnightRefresh();
+    }
+
+    init();
+  </script>
+</body>
+</html>
