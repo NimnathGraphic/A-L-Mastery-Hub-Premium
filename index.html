@@ -149,6 +149,7 @@
       <button class="tab-btn" onclick="openTab('timetable')">Class Time Table</button>
       <button class="tab-btn" onclick="openTab('weekly')">Weekly Plan</button>
       <button class="tab-btn" onclick="openTab('formulas')">Formulas</button>
+      <button class="tab-btn" onclick="openTab('reminders')">Reminders</button>
       <button class="tab-btn" onclick="openTab('help')">Help</button>
     </div>
   </header>
@@ -479,6 +480,21 @@
 </div>
         
     </div>
+    <div id="reminders" class="panel">
+  <div class="card">
+    <h2>Add Reminder</h2>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+      <input type="text" id="remTitle" placeholder="Reminder title..." style="flex:1;">
+      <select id="remSubject">
+        <option>Combined Maths</option><option>Physics</option><option>Chemistry</option><option>General</option>
+      </select>
+      <input type="date" id="remDate">
+      <button class="primary-btn" onclick="addReminder()">Add Reminder</button>
+    </div>
+  </div>
+  <div class="card" id="remindersContainer">
+    </div>
+</div>
 
     <div id="help" class="panel">
       <div class="card">
@@ -792,8 +808,49 @@
     function deleteClass(id) {
       data.classes = data.classes.filter(x => x.id !== id);
       saveData(); renderClasses();
-    }
+    } 
+    // Reminders Logic
+function renderReminders() {
+  const container = document.getElementById('remindersContainer');
+  let html = '<h2>Your Reminders</h2>';
+  
+  if (data.reminders && data.reminders.length > 0) {
+    data.reminders.forEach(r => {
+      html += `
+        <div class="task-item" style="margin-bottom:10px;">
+          <div>
+            <strong>${r.title}</strong> - <span style="color:var(--gold)">${r.subject}</span>
+            <br><small style="color:var(--muted)">📅 ${r.date}</small>
+          </div>
+          <button class="delete-btn" onclick="deleteReminder(${r.id})">Delete</button>
+        </div>`;
+    });
+  } else {
+    html += '<p style="color:var(--muted)">දැනට Reminders නැත.</p>';
+  }
+  container.innerHTML = html;
+}
 
+function addReminder() {
+  const title = document.getElementById('remTitle').value;
+  const subject = document.getElementById('remSubject').value;
+  const date = document.getElementById('remDate').value;
+  
+  if(!title || !date) { alert("Title සහ Date දෙන්නම අවශ්‍යයි!"); return; }
+  
+  if(!data.reminders) data.reminders = [];
+  data.reminders.push({ id: Date.now(), title, subject, date });
+  saveData();
+  renderReminders();
+  document.getElementById('remTitle').value = '';
+}
+
+function deleteReminder(id) {
+  data.reminders = data.reminders.filter(r => r.id !== id);
+  saveData();
+  renderReminders();
+}
+    
     // Initialize Application --------------------------------------------------
     function init() {
       checkMonthlyReset();
@@ -802,6 +859,7 @@
       renderTasks();
       renderClasses();
       renderWeeklyPlan();
+      renderReminders();
     }
 
     window.onload = init;
