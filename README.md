@@ -27,12 +27,6 @@ A/L Mastery Hub යනු උසස් පෙළ (A/L) සිසුන් සඳ
 2. `index.html` file එක ඕනෑම වෙබ් බ්‍රව්සරයකින් විවෘත කරන්න.
 3. දත්ත සුරැකීම සඳහා වෙබ් බ්‍රව්සරයේ **Local Storage** භාවිතා වේ.
 
-## 🔗 GitHub Pages හරහා Host කිරීම
-
-1. ඔබේ Repository එකට ගොස් **Settings** වෙත යන්න.
-2. **Pages** අංශය තෝරන්න.
-3. **Build and deployment** යටතේ **Branch** එක `main` ලෙස තෝරා **Save** කරන්න.
-4. විනාඩි කිහිපයකින් ඔබේ වෙබ් අඩවිය online live වනු ඇත.
 
 ---
 
