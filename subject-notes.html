@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+  <meta charset="UTF-8">
+  <title>Subject Notes | A/L Mastery Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="data-notes.js"></script> <style>
+    /* Reusing your CSS variables to keep the theme consistent */
+    :root {
+      --blue-primary: #0A192F; --blue-secondary: #172A45;
+      --gold: #D4AF37; --white: #FFFFFF; --muted: #8892B0;
+      --border: #233554; --bg: #020C1B;
+    }
+    body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--white); margin: 0; line-height: 1.6; }
+    header { background-color: var(--blue-primary); border-bottom: 2px solid var(--gold); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+    header h1 { color: var(--gold); font-size: 1.5rem; margin: 0; }
+    .back-btn { background: transparent; color: var(--white); border: 1px solid var(--border); padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: 600; text-decoration: none;}
+    .back-btn:hover { background: var(--gold); color: #000; }
+    .container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
+    
+    .subject-section { margin-bottom: 40px; }
+    .subject-section h2 { color: var(--gold); border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+    .note-card { background: var(--blue-secondary); border-left: 4px solid var(--gold); padding: 20px; border-radius: 8px; margin-top: 15px; }
+    .note-date { font-size: 0.8rem; color: var(--muted); margin-bottom: 10px; }
+    .note-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 10px; color: #fff; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>My Subject Notes</h1>
+    <a href="index.html" class="back-btn">Back to Dashboard</a>
+  </header>
+  <div class="container" id="notesContainer"></div>
+
+  <script>
+    function renderNotes() {
+      const container = document.getElementById('notesContainer');
+      let html = '';
+      
+      for (const [subject, notes] of Object.entries(notesData)) {
+        if (notes.length > 0) {
+          html += `<div class="subject-section"><h2>${subject}</h2>`;
+          notes.forEach(note => {
+            html += `
+              <div class="note-card">
+                <div class="note-date">📅 ${note.date}</div>
+                <div class="note-title">${note.title}</div>
+                <div class="note-content">${note.content}</div>
+              </div>`;
+          });
+          html += `</div>`;
+        }
+      }
+      container.innerHTML = html || '<p style="color:var(--muted); text-align:center;">තාම Notes මොකුත් update කරලා නෑ මචන්.</p>';
+    }
+    window.onload = renderNotes;
+  </script>
+</body>
+</html>
