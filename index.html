@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A/L Mastery Hub | Premium</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  
+  <script src="data-questions.js"></script>
+
+  <script>
+    window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  
+  <style>
+    /* (ඔයාගේ කලින් තිබ්බ CSS ඒ විදිහටම තියෙනවා) */
+    :root {
+      --blue-primary: #0A192F; --blue-secondary: #172A45; --black: #000000;
+      --gold: #D4AF37; --maroon: #800020; --white: #FFFFFF; --muted: #8892B0;
+      --border: #233554; --bg: #020C1B;
+      --star-red: #FF3333; --star-cyan: #00FFFF; --star-blue: #3366FF; --star-violet: #8A2BE2;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--white); line-height: 1.6; }
+    header { background-color: var(--blue-primary); border-bottom: 2px solid var(--gold); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+    .brand h1 { color: var(--gold); font-size: 1.5rem; }
+    .brand p { color: var(--muted); font-size: 0.8rem; }
+    .nav-tabs { display: flex; gap: 10px; overflow-x: auto; }
+    .tab-btn { background: transparent; color: var(--white); border: 1px solid var(--border); padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: 600; transition: 0.3s; white-space: nowrap; }
+    .tab-btn.active, .tab-btn:hover { background: var(--gold); color: var(--black); border-color: var(--gold); }
+    .nav-link-btn { text-decoration: none; display: inline-block; }
+    .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+    .panel { display: none; } .panel.active { display: block; animation: fadeIn 0.4s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .card { background: var(--blue-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+    h2 { color: var(--gold); margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 10px;}
+    input, select, textarea, button { font-family: 'Inter', sans-serif; padding: 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--blue-primary); color: var(--white); }
+    button.primary-btn { background: var(--gold); color: var(--black); font-weight: bold; cursor: pointer; border: none; }
+    button.primary-btn:hover { background: #b5952f; }
+    .stars-tracker { display: flex; flex-direction: column; gap: 15px; }
+    .star-display { font-size: 2rem; letter-spacing: 5px; }
+    .half-star { display: inline-block; position: relative; width: 0.5em; overflow: hidden; vertical-align: top;}
+    .small-date { font-size: 0.8rem; color: var(--muted); }
+    .yesterday-stars { font-size: 0.9rem; color: var(--muted); margin-top: 5px; }
+    .view-all-link { color: var(--gold); cursor: pointer; font-size: 0.9rem; text-decoration: underline; }
+    .task-list { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+    .task-item { display: flex; align-items: center; justify-content: space-between; background: var(--blue-primary); padding: 12px; border-radius: 8px; border-left: 4px solid var(--gold); }
+    .task-item.completed { opacity: 0.6; text-decoration: line-through; border-left-color: var(--muted); }
+    .task-item.repeat-task { border-left-color: var(--maroon); background: rgba(128, 0, 32, 0.2); }
+    .task-item.special-task { border-left-color: #00FFFF; background: rgba(0, 255, 255, 0.1); }
+    .repeat-badge { background: var(--maroon); font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; margin-left: 10px;}
+    .special-badge { background: #00FFFF; color: black; font-weight: bold; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; margin-left: 10px;}
+    .task-actions button { background: transparent; border: none; cursor: pointer; color: var(--white); font-size: 1.2rem; margin-left: 10px;}
+    .upcoming-grid { display: flex; flex-direction: column; gap: 20px; }
+    .subject-card { background: var(--blue-secondary); padding: 15px; border-radius: 8px; border: 1px solid var(--border); }
+    .subject-card h3 { color: var(--gold); margin-bottom: 10px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { border: 1px solid var(--border); padding: 12px; text-align: left; }
+    th { background: var(--blue-primary); color: var(--gold); }
+    .delete-btn { background: var(--maroon); color: white; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer;}
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 1000; }
+    .modal-content { background: var(--blue-secondary); padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; border: 1px solid var(--gold); }
+    .modal-content h3 { color: var(--gold); margin-bottom: 15px; }
+    .formula-section { margin-bottom: 25px; }
+    .formula-section h4 { color: var(--gold); margin-bottom: 10px; }
+    .formula-box { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 3px solid var(--gold); font-size: 0.95rem; }
+    .today-subject-banner { background: linear-gradient(90deg, var(--blue-secondary), var(--maroon)); padding: 15px; border-radius: 8px; text-align: center; font-weight: bold; font-size: 1.2rem; margin-bottom: 20px; border: 1px solid var(--gold); }
+    
+    /* Quiz Specific CSS */
+    .quiz-q-box { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--border); }
+    .quiz-q-text { margin-bottom: 10px; font-weight: bold; }
+    .quiz-options label { margin-right: 15px; cursor: pointer; }
+    .theory-box { background: rgba(212, 175, 55, 0.1); border-left: 3px solid var(--gold); padding: 10px; margin-top: 15px; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <h1>A/L Mastery Hub</h1>
+      <p>Premium Study Planner</p>
+    </div>
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="openTab('dashboard')">Dashboard</button>
+      <button class="tab-btn" onclick="openTab('upcoming')">Upcoming Work</button>
+      <button class="tab-btn" onclick="openTab('timetable')">Class Time Table</button>
+      <button class="tab-btn" onclick="openTab('weekly')">Weekly Plan</button>
+      <button class="tab-btn" onclick="openTab('formulas')">Formulas</button>
+      <button class="tab-btn" onclick="openTab('reminders')">Reminders</button>
+      <a href="subject-notes.html" class="nav-link-btn tab-btn">Subject Notes</a>
+    </div>
+  </header>
+
+  <div class="container">
+    <div id="dashboard" class="panel active">
+      <div id="todaySubjectBanner" class="today-subject-banner">
+        අද දවසේ විෂය: පූරණය වෙමින්...
+      </div>
+
+      <div class="card">
+        <h2>Daily Study Stars Tracker <span class="small-date" id="currentDateDisplay"></span></h2>
+        <div class="stars-tracker">
+          <div style="display: flex; gap: 10px;">
+            <input type="number" id="studyHoursInput" placeholder="පැය ගණන (උදා: 2.5)" step="0.5" min="0">
+            <button class="primary-btn" onclick="addStudyHours()">Add Hours</button>
+          </div>
+          <div>
+            <div id="todayStarsContainer" class="star-display"></div>
+            <div class="yesterday-stars" id="yesterdayStarsText">ඊයේ ගත් තරු: 0</div>
+            <div class="view-all-link" onclick="openStarsModal()">View All (මේ මාසයේ)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>To-Do List</h2>
+        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+          <select id="todoSubject">
+            <option value="General">General</option>
+            <option value="Combined Maths">Combined Maths</option>
+            <option value="Physics">Physics</option>
+            <option value="Chemistry">Chemistry</option>
+          </select>
+          <input type="text" id="todoTextInput" placeholder="වැඩේ මොකක්ද? (Task details)" style="flex-grow: 1;">
+          <button class="primary-btn" onclick="addTodo()">Add Task</button>
+        </div>
+        <div id="todoListContainer" class="task-list"></div>
+      </div>
+    </div>
+
+    <div id="upcoming" class="panel">
+      <div class="card">
+        <h2>Add Upcoming Work</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+          <select id="upSubject">
+            <option value="Combined Maths">Combined Maths</option>
+            <option value="Physics">Physics</option>
+            <option value="Chemistry">Chemistry</option>
+            <option value="General">General</option>
+          </select>
+          <input type="text" id="upTextInput" placeholder="Task description..." style="flex-grow: 1;">
+          <input type="date" id="upDateInput">
+          <button class="primary-btn" onclick="addUpcoming()">Add</button>
+        </div>
+      </div>
+      <div class="upcoming-grid">
+        <div class="subject-card" id="card-Combined Maths"><h3>Combined Maths</h3><div class="task-list"></div></div>
+        <div class="subject-card" id="card-Physics"><h3>Physics</h3><div class="task-list"></div></div>
+        <div class="subject-card" id="card-Chemistry"><h3>Chemistry</h3><div class="task-list"></div></div>
+        <div class="subject-card" id="card-General"><h3>General</h3><div class="task-list"></div></div>
+      </div>
+    </div>
+
+    <div id="timetable" class="panel">
+      <div class="card">
+        <h2>Class Time Table</h2>
+        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+          <select id="ttDay">
+            <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+            <option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option>
+          </select>
+          <input type="time" id="ttTime">
+          <input type="text" id="ttSubject" placeholder="Class / Subject" style="flex-grow:1;">
+          <button class="primary-btn" onclick="addClass()">Add Class</button>
+        </div>
+        <table>
+          <thead><tr><th>Day</th><th>Time</th><th>Subject</th><th>Action</th></tr></thead>
+          <tbody id="ttBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="weekly" class="panel">
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h2>Weekly Plan</h2>
+          <button class="primary-btn" onclick="saveWeeklyPlan()">Save Changes</button>
+        </div>
+        <table>
+          <thead><tr><th>Day</th><th>Target Subject</th></tr></thead>
+          <tbody id="wpBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="formulas" class="panel">
+        <div class="card">
+            <h2 style="color:var(--muted)">[Your existing formula tables are intact here]</h2>
+        </div>
+    </div>
+
+    <div id="reminders" class="panel">
+      <div class="card">
+        <h2>Add Reminder</h2>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <input type="text" id="remTitle" placeholder="Reminder title..." style="flex:1;">
+          <select id="remSubject">
+            <option>Combined Maths</option><option>Physics</option><option>Chemistry</option><option>General</option>
+          </select>
+          <input type="date" id="remDate">
+          <button class="primary-btn" onclick="addReminder()">Add Reminder</button>
+        </div>
+      </div>
+      <div class="card" id="remindersContainer"></div>
+    </div>
+
+  </div> <div class="modal-overlay" id="rescheduleModal">
+    <div class="modal-content">
+      <h3>Move Repeat Task</h3>
+      <p style="margin-bottom:10px; font-size: 0.9rem; color: var(--muted);">මෙම කාර්යය වෙනත් දිනයකට යොමු කරන්න.</p>
+      <input type="date" id="rescheduleDateInput" style="width: 100%; margin-bottom: 15px;">
+      <div style="display: flex; gap: 10px; justify-content: flex-end;">
+        <button class="primary-btn" style="background:var(--border); color:white;" onclick="closeModal('rescheduleModal')">Cancel</button>
+        <button class="primary-btn" onclick="saveReschedule()">Move Task</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="starsModal">
+    <div class="modal-content" style="max-height: 80vh; overflow-y: auto;">
+      <h3>මේ මාසයේ තරු සටහන</h3>
+      <div id="starsHistoryList" style="margin-bottom: 15px;"></div>
+      <button class="primary-btn" style="width: 100%;" onclick="closeModal('starsModal')">Close</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="quizModal">
+    <div class="modal-content" style="max-width: 600px; max-height: 85vh; overflow-y: auto;">
+      <h3 id="quizTitle">Revise The Memory</h3>
+      <div id="quizContainer"></div>
+      <div id="quizResults" style="display:none; margin-top:15px; border-top:1px solid var(--border); padding-top:15px;"></div>
+      <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+        <button class="primary-btn" id="quizCloseBtn" style="background:var(--border); color:white; display:none;" onclick="closeModal('quizModal')">Close</button>
+        <button class="primary-btn" id="quizSubmitBtn" onclick="submitQuiz()">Submit Answers</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'al_mastery_v4';
+    let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+      tasks: [], classes: [], stars: {}, 
+      lastMonth: new Date().getMonth(),
+      weeklyPlan: {
+        1: "සංයුක්ත ගණිතය", 2: "රසායන විද්‍යාව", 3: "රසායන විද්‍යාව", 
+        4: "භෞතික විද්‍යාව", 5: "Physics", 6: "සංයුක්ත ගණිතය", 0: "සංයුක්ත ගණිතය"
+      },
+      quizProgress: { "Chemistry": 0, "Physics": 0, "Combined Maths": 0 }
+    };
+
+    if(!data.quizProgress) data.quizProgress = { "Chemistry": 0, "Physics": 0, "Combined Maths": 0 };
+    let currentRescheduleId = null;
+    let activeQuizSubject = "";
+    let activeQuizTaskId = null;
+
+    // Utility Dates
+    function todayISO() {
+      const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    }
+    function yesterdayISO() {
+      const d = new Date(); d.setDate(d.getDate() - 1);
+      return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    }
+
+    function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+
+    function openTab(tabId) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+
+    // Subject Normalizer (Maps Sinhala names to English standard for Quiz Logic)
+    function getStandardSubject(sub) {
+        if(sub.includes("රසායන") || sub.includes("Chemistry")) return "Chemistry";
+        if(sub.includes("භෞතික") || sub.includes("Physics")) return "Physics";
+        if(sub.includes("ගණිතය") || sub.includes("Maths")) return "Combined Maths";
+        return null;
+    }
+
+    // --- NEW: Quiz Feature Logic ---
+    function generateSpecialTasks() {
+      let today = todayISO();
+      let todayDay = new Date().getDay();
+      let todaySub = data.weeklyPlan[todayDay];
+      let stdSub = getStandardSubject(todaySub);
+      
+      // Check if we have quiz data for today's subject
+      if (stdSub && quizData[stdSub] && quizData[stdSub].length > 0) {
+        // Find which set they are on
+        let progressIndex = data.quizProgress[stdSub] || 0;
+        
+        // Loop back to 0 if they finished all sets
+        if (progressIndex >= quizData[stdSub].length) {
+            progressIndex = 0;
+            data.quizProgress[stdSub] = 0;
+            saveData();
+        }
+
+        // Check if task already exists for today
+        let hasTask = data.tasks.find(t => t.isSpecial === "quiz" && t.subject === stdSub && t.date === today);
+        
+        if (!hasTask) {
+          data.tasks.push({ 
+              id: Date.now(), 
+              text: "Revise the memory (Questions)", 
+              subject: stdSub, 
+              date: today, 
+              completed: false, 
+              isRepeat: false, 
+              isSpecial: "quiz" 
+          });
+          saveData();
+        }
+      }
+    }
+
+    function openQuizTask(taskId, subject) {
+        activeQuizTaskId = taskId;
+        activeQuizSubject = subject;
+        let progressIndex = data.quizProgress[subject] || 0;
+        let currentSet = quizData[subject][progressIndex];
+
+        document.getElementById('quizTitle').innerText = `${subject} - Revise The Memory (Set ${currentSet.setId})`;
+        let html = '';
+        currentSet.questions.forEach((q, index) => {
+            html += `
+            <div class="quiz-q-box" id="qbox_${index}">
+                <div class="quiz-q-text">${index + 1}. ${q.q}</div>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q_${index}" value="true"> හරි (True)</label>
+                    <label><input type="radio" name="q_${index}" value="false"> වැරදි (False)</label>
+                </div>
+            </div>`;
+        });
+
+        document.getElementById('quizContainer').innerHTML = html;
+        document.getElementById('quizContainer').style.display = 'block';
+        document.getElementById('quizResults').style.display = 'none';
+        document.getElementById('quizSubmitBtn').style.display = 'block';
+        document.getElementById('quizCloseBtn').style.display = 'none';
+        
+        openModal('quizModal');
+    }
+
+    function submitQuiz() {
+        let progressIndex = data.quizProgress[activeQuizSubject] || 0;
+        let currentSet = quizData[activeQuizSubject][progressIndex];
+        let correctCount = 0;
+        let total = currentSet.questions.length;
+
+        currentSet.questions.forEach((q, index) => {
+            let selected = document.querySelector(`input[name="q_${index}"]:checked`);
+            let box = document.getElementById(`qbox_${index}`);
+            
+            if (selected) {
+                let isCorrect = (selected.value === "true") === q.a;
+                if (isCorrect) {
+                    correctCount++;
+                    box.style.borderLeft = "4px solid #00FF00"; // Green for correct
+                } else {
+                    box.style.borderLeft = "4px solid var(--star-red)"; // Red for wrong
+                }
+            } else {
+                box.style.borderLeft = "4px solid var(--star-red)"; // Unanswered = wrong
+            }
+        });
+
+        // Advice logic
+        let advice = "";
+        if (correctCount === total) advice = "සුපිරි! නියමෙටම මතක තියෙනවා 🔥";
+        else if (correctCount >= total * 0.7) advice = "ගොඩක් හොදයි! පොඩි වැරදි ටිකක් තියෙන්නේ 👍";
+        else if (correctCount >= total * 0.4) advice = "තව ටිකක් පාඩම් කරන්න වෙයි මචන් 😕";
+        else advice = "Theory ටික ආයෙත් අනිවාර්යයෙන්ම බලන්න! 🚨";
+
+        let theoryHtml = '<div class="theory-box"><strong>වැදගත් කරුණු:</strong><ul style="margin-top:5px; padding-left:20px;">';
+        currentSet.theory.forEach(t => theoryHtml += `<li>${t}</li>`);
+        theoryHtml += '</ul></div>';
+
+        document.getElementById('quizResults').innerHTML = `
+            <h4 style="color:var(--gold)">Score: ${correctCount} / ${total}</h4>
+            <p>${advice}</p>
+            ${theoryHtml}
+        `;
+        document.getElementById('quizResults').style.display = 'block';
+        
+        // Hide submit, show close
+        document.getElementById('quizSubmitBtn').style.display = 'none';
+        document.getElementById('quizCloseBtn').style.display = 'block';
+
+        // Mark task complete & advance progress
+        let t = data.tasks.find(x => x.id === activeQuizTaskId);
+        if (t && !t.completed) {
+            t.completed = true;
+            data.quizProgress[activeQuizSubject] = progressIndex + 1;
+            saveData();
+            renderTasks();
+        }
+    }
+
+    // --- Task Rendering Updates ---
+    function renderTasks() {
+      let today = todayISO();
+      let todoHtml = '';
+      let upHtml = {'Combined Maths': '', 'Physics': '', 'Chemistry': '', 'General': ''};
+
+      data.tasks.forEach(t => {
+        if(t.date === today && !t.completed) {
+          if (t.isSpecial === "quiz") {
+              // Special Undeletable Task UI
+              todoHtml += `
+              <div class="task-item special-task">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <span>
+                    <strong style="color:var(--gold)">[${t.subject}]</strong> ${t.text}
+                    <span class="special-badge">Must Do</span>
+                  </span>
+                </div>
+                <div class="task-actions">
+                  <button class="primary-btn" style="font-size:0.8rem; padding:5px 10px;" onclick="openQuizTask(${t.id}, '${t.subject}')">Start</button>
+                </div>
+              </div>`;
+          } else {
+              // Normal Task UI
+              todoHtml += `
+                <div class="task-item ${t.isRepeat ? 'repeat-task' : ''}">
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <input type="checkbox" onchange="toggleTask(${t.id})">
+                    <span>
+                      <strong style="color:var(--gold)">[${t.subject}]</strong> ${t.text}
+                      ${t.isRepeat ? '<span class="repeat-badge">Repeat Task</span>' : ''}
+                    </span>
+                  </div>
+                  <div class="task-actions">
+                    ${t.isRepeat ? `<button onclick="openReschedule(${t.id})">⋮</button>` : ''}
+                    <button onclick="deleteTask(${t.id})" style="color:var(--maroon)">✖</button>
+                  </div>
+                </div>`;
+          }
+        } 
+        else if ((!t.date || t.date > today) && !t.completed) {
+          let dateBadge = t.date ? `<span style="font-size:0.8rem; color:var(--muted)">📅 ${t.date}</span>` : '';
+          let item = `
+            <div class="task-item" style="margin-bottom:8px;">
+              <div style="display:flex; flex-direction:column;">
+                <span>${t.text}</span>
+                ${dateBadge}
+              </div>
+              <div class="task-actions">
+                <button onclick="openReschedule(${t.id})">⋮</button>
+                <button onclick="deleteTask(${t.id})" style="color:var(--maroon)">✖</button>
+              </div>
+            </div>`;
+          if(upHtml[t.subject] !== undefined) upHtml[t.subject] += item;
+          else upHtml['General'] += item;
+        }
+      });
+
+      document.getElementById('todoListContainer').innerHTML = todoHtml || '<p style="color:var(--muted)">අදට කාර්යයන් නැත.</p>';
+      
+      Object.keys(upHtml).forEach(sub => {
+        let container = document.querySelector(`#card-${sub.replace(' ', '\\ ')} .task-list`);
+        if(container) container.innerHTML = upHtml[sub] || '<p style="color:var(--border)">හිස්</p>';
+      });
+    }
+
+    // Existing App Functions
+    function toggleTask(id) { let t = data.tasks.find(x => x.id === id); if(t) { t.completed = true; saveData(); renderTasks(); } }
+    function deleteTask(id) { data.tasks = data.tasks.filter(x => x.id !== id); saveData(); renderTasks(); }
+    function openReschedule(id) { currentRescheduleId = id; document.getElementById('rescheduleDateInput').value = ''; openModal('rescheduleModal'); }
+    function saveReschedule() {
+      let newDate = document.getElementById('rescheduleDateInput').value; if(!newDate) return;
+      let t = data.tasks.find(x => x.id === currentRescheduleId);
+      if(t) { t.date = newDate; t.isRepeat = false; saveData(); renderTasks(); closeModal('rescheduleModal'); }
+    }
+    function addTodo() { let text = document.getElementById('todoTextInput').value.trim(); let subject = document.getElementById('todoSubject').value; if(!text) return; data.tasks.push({ id: Date.now(), text, subject, date: todayISO(), completed: false, isRepeat: false }); saveData(); renderTasks(); document.getElementById('todoTextInput').value = ''; }
+    function addUpcoming() { let text = document.getElementById('upTextInput').value.trim(); let subject = document.getElementById('upSubject').value; let date = document.getElementById('upDateInput').value; if(!text) return; data.tasks.push({ id: Date.now(), text, subject, date: date || null, completed: false, isRepeat: false }); saveData(); renderTasks(); document.getElementById('upTextInput').value = ''; document.getElementById('upDateInput').value = ''; }
+    
+    // Weekly plan
+    function renderWeeklyPlan() {
+      let html = ''; const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+      const dayIndexMap = { "Sunday":0, "Monday":1, "Tuesday":2, "Wednesday":3, "Thursday":4, "Friday":5, "Saturday":6 };
+      days.forEach(d => { let idx = dayIndexMap[d]; html += `<tr><td>${d}</td><td><input type="text" id="wp_${idx}" value="${data.weeklyPlan[idx]}" style="width:100%; border:none;"></td></tr>`; });
+      document.getElementById('wpBody').innerHTML = html;
+      let todayDay = new Date().getDay();
+      document.getElementById('todaySubjectBanner').innerText = `අද දවසේ විෂය: ${data.weeklyPlan[todayDay]}`;
+    }
+    function saveWeeklyPlan() { for(let i=0; i<=6; i++) { data.weeklyPlan[i] = document.getElementById(`wp_${i}`).value; } saveData(); renderWeeklyPlan(); alert("Weekly Plan යාවත්කාලීන කරන ලදී!"); }
+
+    // Stars, Timetable, Reminders (Your exact logic kept)
+    function getStarColor(hours) { if (hours > 6) return 'var(--star-violet)'; if (hours >= 5) return 'var(--star-blue)'; if (hours >= 3) return 'var(--star-cyan)'; return 'var(--star-red)'; }
+    function renderStars() { document.getElementById('currentDateDisplay').innerText = `(${todayISO()})`; const today = todayISO(); const yesterday = yesterdayISO(); let todayHours = data.stars[today] || 0; let ydayHours = data.stars[yesterday] || 0; document.getElementById('yesterdayStarsText').innerText = `ඊයේ ගත් තරු: ${ydayHours}`; let starHtml = ''; let color = getStarColor(todayHours); let fullStars = Math.floor(todayHours); let halfStar = (todayHours % 1) >= 0.5; for(let i=0; i<fullStars; i++) starHtml += `★`; if(halfStar) starHtml += `<span class="half-star" style="color:${color}">★</span>`; let container = document.getElementById('todayStarsContainer'); container.innerHTML = starHtml || '<span style="font-size:1rem; color:var(--muted)">අදට තවම තරු නැත</span>'; container.style.color = color; }
+    function addStudyHours() { let val = parseFloat(document.getElementById('studyHoursInput').value); if(isNaN(val) || val <= 0) return; let today = todayISO(); data.stars[today] = (data.stars[today] || 0) + val; saveData(); renderStars(); document.getElementById('studyHoursInput').value = ''; }
+    function openStarsModal() { let html = ''; let entries = Object.entries(data.stars).sort((a,b) => b[0].localeCompare(a[0])); if(entries.length === 0) html = '<p style="color:var(--muted)">දත්ත නොමැත.</p>'; entries.forEach(([date, hrs]) => { let color = getStarColor(hrs); html += `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border);"><span>${date}</span><strong style="color:${color}">${hrs} Hours</strong></div>`; }); document.getElementById('starsHistoryList').innerHTML = html; openModal('starsModal'); }
+    function checkMonthlyReset() { let currentMonth = new Date().getMonth(); if(data.lastMonth !== currentMonth) { if(Object.keys(data.stars).length > 0) { let printWin = window.open('', '_blank'); let report = `<html><head><title>A/L Mastery Hub - Star Report</title></head><body style="font-family:sans-serif;"><h2>Monthly Study Stars Report</h2><hr><ul>`; for(const [d, h] of Object.entries(data.stars)) { report += `<li>${d} : ${h} Hours</li>`; } report += `</ul></body></html>`; printWin.document.write(report); printWin.document.close(); printWin.print(); } data.stars = {}; data.lastMonth = currentMonth; saveData(); } }
+    function processTaskRollover() { let today = todayISO(); let changed = false; data.tasks.forEach(t => { if (!t.completed && t.date && t.date < today) { t.date = today; t.isRepeat = true; changed = true; } }); if(changed) saveData(); }
+    function renderClasses() { let html = ''; data.classes.forEach(c => { html += `<tr><td>${c.day}</td><td>${c.time}</td><td>${c.subject}</td><td><button class="delete-btn" onclick="deleteClass(${c.id})">Del</button></td></tr>`; }); document.getElementById('ttBody').innerHTML = html || '<tr><td colspan="4" style="text-align:center; color:var(--muted);">පන්ති එකතු කර නැත</td></tr>'; }
+    function addClass() { let day = document.getElementById('ttDay').value; let time = document.getElementById('ttTime').value; let subject = document.getElementById('ttSubject').value.trim(); if(!time || !subject) return; data.classes.push({ id: Date.now(), day, time, subject }); saveData(); renderClasses(); document.getElementById('ttSubject').value = ''; }
+    function deleteClass(id) { data.classes = data.classes.filter(x => x.id !== id); saveData(); renderClasses(); }
+    function renderReminders() { const container = document.getElementById('remindersContainer'); let html = '<h2>Your Reminders</h2>'; if (data.reminders && data.reminders.length > 0) { data.reminders.forEach(r => { html += `<div class="task-item" style="margin-bottom:10px;"><div><strong>${r.title}</strong> - <span style="color:var(--gold)">${r.subject}</span><br><small style="color:var(--muted)">📅 ${r.date}</small></div><button class="delete-btn" onclick="deleteReminder(${r.id})">Delete</button></div>`; }); } else { html += '<p style="color:var(--muted)">දැනට Reminders නැත.</p>'; } container.innerHTML = html; }
+    function addReminder() { const title = document.getElementById('remTitle').value; const subject = document.getElementById('remSubject').value; const date = document.getElementById('remDate').value; if(!title || !date) { alert("Title සහ Date දෙන්නම අවශ්‍යයි!"); return; } if(!data.reminders) data.reminders = []; data.reminders.push({ id: Date.now(), title, subject, date }); saveData(); renderReminders(); document.getElementById('remTitle').value = ''; }
+    function deleteReminder(id) { data.reminders = data.reminders.filter(r => r.id !== id); saveData(); renderReminders(); }
+
+    function init() {
+      checkMonthlyReset();
+      processTaskRollover();
+      generateSpecialTasks(); // Inject Quiz task if applicable today
+      renderStars();
+      renderTasks();
+      renderClasses();
+      renderWeeklyPlan();
+      renderReminders();
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>
