@@ -552,17 +552,44 @@
     function addTodo() { let text = document.getElementById('todoTextInput').value.trim(); let subject = document.getElementById('todoSubject').value; if(!text) return; data.tasks.push({ id: Date.now(), text, subject, date: todayISO(), completed: false, isRepeat: false }); saveData(); renderTasks(); document.getElementById('todoTextInput').value = ''; }
     function addUpcoming() { let text = document.getElementById('upTextInput').value.trim(); let subject = document.getElementById('upSubject').value; let date = document.getElementById('upDateInput').value; if(!text) return; data.tasks.push({ id: Date.now(), text, subject, date: date || null, completed: false, isRepeat: false }); saveData(); renderTasks(); document.getElementById('upTextInput').value = ''; document.getElementById('upDateInput').value = ''; }
     
-    // Weekly plan
+    // --- WEEKLY PLAN LOGIC (FIXED) ---
     function renderWeeklyPlan() {
-      let html = ''; const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+      let html = '';
+      // සතියේ දවස් පිළිවෙලට පෙන්වීමට
+      const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
       const dayIndexMap = { "Sunday":0, "Monday":1, "Tuesday":2, "Wednesday":3, "Thursday":4, "Friday":5, "Saturday":6 };
-      days.forEach(d => { let idx = dayIndexMap[d]; html += `<tr><td>${d}</td><td><input type="text" id="wp_${idx}" value="${data.weeklyPlan[idx]}" style="width:100%; border:none;"></td></tr>`; });
+      
+      days.forEach(d => {
+        let idx = dayIndexMap[d];
+        // කලින් දත්ත නැත්නම් හිස්ව තියන්නේ නැතුව "General" වගේ default එකක් දානවා
+        let currentSubject = data.weeklyPlan[idx] || "General"; 
+        
+        html += `<tr>
+          <td>${d}</td>
+          <td><input type="text" id="wp_${idx}" value="${currentSubject}" style="width:100%; border:none;"></td>
+        </tr>`;
+      });
       document.getElementById('wpBody').innerHTML = html;
-      let todayDay = new Date().getDay();
-      document.getElementById('todaySubjectBanner').innerText = `අද දවසේ විෂය: ${data.weeklyPlan[todayDay]}`;
-    }
-    function saveWeeklyPlan() { for(let i=0; i<=6; i++) { data.weeklyPlan[i] = document.getElementById(`wp_${i}`).value; } saveData(); renderWeeklyPlan(); alert("Weekly Plan යාවත්කාලීන කරන ලදී!"); }
 
+      // අද දවසේ විෂය Banner එකට අප්ඩේට් කිරීම
+      let todayDay = new Date().getDay(); // 0-6 අතර අගයක් එන්නේ (0 = ඉරිදා)
+      let todaySub = data.weeklyPlan[todayDay] || "General";
+      document.getElementById('todaySubjectBanner').innerText = `අද දවසේ විෂය: ${todaySub}`;
+    }
+
+    function saveWeeklyPlan() {
+      // දවස් 7ම (0 සිට 6 දක්වා) නිවැරදිව ලූප් එක කැරකැවීම
+      for(let i = 0; i <= 6; i++) {
+        let inputEl = document.getElementById(`wp_${i}`);
+        if(inputEl) {
+          data.weeklyPlan[i] = inputEl.value.trim(); // .value එක කෙලින්ම string එකක් විදිහට ගන්නවා
+        }
+      }
+      saveData(); 
+      renderWeeklyPlan(); // බැනර් එක සහ ටේබල් එක ආයෙත් රෙන්ඩර් කරනවා
+      generateSpecialTasks(); // අලුත් විෂය අනුව Revise memory ටාස්ක් එක හැදෙන්න ඕන නිසා
+      alert("Weekly Plan යාවත්කාලීන කරන ලදී!");
+    }
     // Stars, Timetable, Reminders (Your exact logic kept)
     function getStarColor(hours) { if (hours > 6) return 'var(--star-violet)'; if (hours >= 5) return 'var(--star-blue)'; if (hours >= 3) return 'var(--star-cyan)'; return 'var(--star-red)'; }
     function renderStars() { document.getElementById('currentDateDisplay').innerText = `(${todayISO()})`; const today = todayISO(); const yesterday = yesterdayISO(); let todayHours = data.stars[today] || 0; let ydayHours = data.stars[yesterday] || 0; document.getElementById('yesterdayStarsText').innerText = `ඊයේ ගත් තරු: ${ydayHours}`; let starHtml = ''; let color = getStarColor(todayHours); let fullStars = Math.floor(todayHours); let halfStar = (todayHours % 1) >= 0.5; for(let i=0; i<fullStars; i++) starHtml += `★`; if(halfStar) starHtml += `<span class="half-star" style="color:${color}">★</span>`; let container = document.getElementById('todayStarsContainer'); container.innerHTML = starHtml || '<span style="font-size:1rem; color:var(--muted)">අදට තවම තරු නැත</span>'; container.style.color = color; }
