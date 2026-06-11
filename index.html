@@ -187,21 +187,15 @@
 <div id="formulas" class="panel">
       <div class="card">
         <h2>Physics Quick Formulas</h2>
-        <div class="formula-section">
-          <h4>යාන්ත්‍ර විද්‍යාව (Mechanics)</h4>
-          <div class="formula-box">$$v = u + at$$</div>
-          <div class="formula-box">$$s = ut + \frac{1}{2}at^2$$</div>
-          <div class="formula-box">$$v^2 = u^2 + 2as$$</div>
-          <div class="formula-box">$$P = Fv$$</div>
-        </div>
+        
         <div class="formula-section">
           <h4>දෝලන හා තරංග (Waves & Oscillations)</h4>
           <div class="formula-box">$$v = f\lambda$$</div>
           <div class="formula-box">$$f = \frac{1}{2L}\sqrt{\frac{T}{m}}$$</div>
           <div class="formula-box">$$I = \frac{P}{4\pi r^2}$$</div>
         </div>
-      </div>
-<div class="formula-section">
+
+        <div class="formula-section">
           <h4>2. නිව්ටන්ගේ චලිත නියම</h4>
           <div class="formula-box">
             <strong>දෙවන නියමය:</strong> $$F = ma$$  |  $$F = \frac{\Delta p}{\Delta t}$$<br><br>
@@ -213,7 +207,7 @@
           <h4>3. ගම්‍යතාවය සහ ආවේගය</h4>
           <div class="formula-box">
             ගම්‍යතාවය: $$p = mv$$<br>
-            ආවේගය: $$I = F \Delta t$$<br>
+            आවේගය: $$I = F \Delta t$$<br>
             ආවේග-ගම්‍යතා ප්‍රමේයය: $$I = \Delta p = m(v - u)$$<br>
             ගම්‍යතා සංස්ථිති නියමය: $$m_{1}u_{1} + m_{2}u_{2} = m_{1}v_{1} + m_{2}v_{2}$$
           </div>
@@ -272,8 +266,8 @@
             ගුරුත්වාකර්ෂණ ක්ෂේත්‍ර තීව්‍රතාවය: $$g = G\frac{M}{r^{2}}$$
           </div>
         </div>
-
       </div>
+
       <div class="card">
         <h2>ත්‍රිකෝණමිතිය - Combined Maths Formulas</h2>
         
@@ -397,18 +391,21 @@
             $$a^2 = b^2 + c^2 - 2bc \cos A$$
           </div>
         </div>
-
       </div>
-       <div class="card">
-  <h2>ආවර්තිතා වගුව (Periodic Table)</h2>
-  <div class="formula-section" style="text-align: center;">
-    <p style="color: var(--muted); margin-bottom: 15px;">රසායන විද්‍යාව සඳහා ආවර්තිතා වගුව:</p>
-    
-    <div style="width: 100%; overflow-x: auto;">
-      <iframe src="https://ptable.com/?lang=si" 
-              style="width: 100%; height: 500px; border: none; border-radius: 10px;" 
-              title="Periodic Table">
-      </iframe>
+
+      <div class="card">
+        <h2>ආවර්තිතා වගුව (Periodic Table)</h2>
+        <div class="formula-section" style="text-align: center;">
+          <p style="color: var(--muted); margin-bottom: 15px;">රසායන විද්‍යාව සඳහා ආවර්තිතා වගුව:</p>
+          <div style="width: 100%; overflow-x: auto;">
+            <iframe src="https://ptable.com/?lang=si" 
+                    style="width: 100%; height: 500px; border: none; border-radius: 10px;" 
+                    title="Periodic Table">
+            </iframe>
+          </div>
+        </div>
+      </div>
+
       <div class="card">
         <h2>Chemistry Core Tables</h2>
         <table>
@@ -449,15 +446,7 @@
       </div>
 
       <div class="card">
-        <h2>Combined Maths Essentials</h2>
-        <div class="formula-section">
-          <h4>ත්‍රිකෝණමිතිය (Trigonometry)</h4>
-          <div class="formula-box">$$\sin^2\theta + \cos^2\theta = 1$$</div>
-          <div class="formula-box">$$\sin(A \pm B) = \sin A\cos B \pm \cos A\sin B$$</div>
-          <div class="formula-box">$$\cos(A \pm B) = \cos A\cos B \mp \sin A\sin B$$</div>
-          <div class="formula-box">$$\sin 2\theta = 2\sin\theta\cos\theta$$</div>
-          <div class="formula-box">$$\cos 2\theta = \cos^2\theta - \sin^2\theta = 2\cos^2\theta - 1 = 1 - 2\sin^2\theta$$</div>
-        </div>
+        <h2>Combined Maths Essentials (Calculus)</h2>
         <div class="formula-section">
           <h4>අවකලනය (Differentiation)</h4>
           <div class="formula-box">$$\frac{d}{dx}(x^n) = nx^{n-1}$$</div>
@@ -467,7 +456,10 @@
         </div>
       </div>
     </div>
+    ```
 
+### 💡 මීට අමතරව පොඩි වැදගත් දෙයක්:
+කලින් මම දීපු `index.html` එකේ, මේ formulas වලට උඩින් තිබ්බ `div id="formulas" class="panel"` බ්ලක් එක ඇතුලේ පරණ කෝඩ් එකේ තිබ්බ කොටස් කිහිපයක් විතරයි තිබුණේ. දැන් මේ උඩ තියෙන කෝඩ් එක දැම්මම ඔයාගේ **සම්පූර්ණ Physics, Combined Maths සහ Chemistry** කියන ඔක්කොම Formulas ටික එකම තැනකට ලස්සනට වැටෙනවා මචන්!
     <div id="reminders" class="panel">
       <div class="card">
         <h2>Add Reminder</h2>
