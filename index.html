@@ -93,24 +93,26 @@
 
   <div class="container">
     <div id="dashboard" class="panel active">
-      <div id="todaySubjectBanner" class="today-subject-banner">
-        අද දවසේ විෂය: පූරණය වෙමින්...
-      </div>
+  <div id="todaySubjectBanner" class="today-subject-banner">
+    අද දවසේ විෂය: පූරණය වෙමින්...
+  </div>
 
-      <div class="card">
-        <h2>Daily Study Stars Tracker <span class="small-date" id="currentDateDisplay"></span></h2>
-        <div class="stars-tracker">
-          <div style="display: flex; gap: 10px;">
-            <input type="number" id="studyHoursInput" placeholder="පැය ගණන (උදා: 2.5)" step="0.5" min="0">
-            <button class="primary-btn" onclick="addStudyHours()">Add Hours</button>
-          </div>
-          <div>
-            <div id="todayStarsContainer" class="star-display"></div>
-            <div class="yesterday-stars" id="yesterdayStarsText">ඊයේ ගත් තරු: 0</div>
-            <div class="view-all-link" onclick="openStarsModal()">View All (මේ මාසයේ)</div>
-          </div>
-        </div>
+  <div id="dashClock" style="font-size: 2rem; color: var(--gold); text-align: center; margin-bottom: 20px; font-weight: bold; background: var(--blue-secondary); padding: 10px; border-radius: 8px; border: 1px solid var(--border); width: fit-content; margin-left: auto; margin-right: auto;"></div>
+
+  <div class="card">
+    <h2>Daily Study Stars Tracker <span class="small-date" id="currentDateDisplay"></span></h2>
+    <div class="stars-tracker">
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <input type="number" id="studyHoursInput" placeholder="පැය ගණන (උදා: 2.5)" step="0.5" min="0">
+        <button class="primary-btn" onclick="addStudyHours()">Add Hours</button>
+        <div id="todayStarsContainer" class="star-display" style="margin-left: 20px; font-size: 2.5rem;"></div>
       </div>
+      <div>
+        <div class="yesterday-stars" id="yesterdayStarsText">ඊයේ ගත් තරු: 0</div>
+        <div class="view-all-link" onclick="openStarsModal()">View All (මේ මාසයේ)</div>
+      </div>
+    </div>
+  </div>
 
       <div class="card">
         <h2>To-Do List</h2>
@@ -842,6 +844,55 @@
     }
 
     window.onload = init;
+    // Quiz එක වැඩ කරන්න මේක අනිවාර්යයි
+  function openQuizLayout(subject, setIndex) {
+    let currentSet = quizData[subject][setIndex];
+    if (!currentSet) return;
+    document.getElementById('quizTitle').innerText = `${subject} - Revise The Memory (Set ${currentSet.setId})`;
+    
+    let html = '';
+    currentSet.questions.forEach((q, index) => {
+      html += `
+        <div class="quiz-q-box" id="qbox_${index}">
+          <div class="quiz-q-text">${index + 1}. ${q.q}</div>
+          <div class="quiz-options">
+            <label><input type="radio" name="q_${index}" value="true"> True</label>
+            <label><input type="radio" name="q_${index}" value="false"> False</label>
+          </div>
+        </div>
+      `;
+    });
+    
+    html += `<button class="primary-btn" style="width:100%; margin-top:15px;" onclick="submitQuiz()">Submit Answers</button>`;
+    document.getElementById('quizContainer').innerHTML = html;
+    
+    // මේ ලයින් එකෙන් තමයි Quiz බොක්ස් එක පේන්න ගන්නේ
+    document.getElementById('quizModal').style.display = 'flex';
+  }
+
+  // Page එක load වෙද්දී ඔක්කොම details පෙන්නන්න සහ Clock එක වැඩ කරවන්න
+  window.onload = function() {
+    if (typeof init === "function") {
+      init();
+    } else {
+      renderStars();
+      renderTasks();
+      renderClasses();
+      renderReminders();
+      updateManualSetDropdown();
+    }
+    
+    // Clock Function
+    function updateClock() {
+      let now = new Date();
+      let dashClock = document.getElementById('dashClock');
+      if(dashClock) {
+        dashClock.innerText = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      }
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+  };
   </script>
 </body>
 </html>
