@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <title>Subject Notes | A/L Mastery Hub</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <script src="data-notes.js"></script> <style>
-    /* Reusing your CSS variables to keep the theme consistent */
+  <script src="data-notes.js"></script> 
+  <style>
     :root {
       --blue-primary: #0A192F; --blue-secondary: #172A45;
       --gold: #D4AF37; --white: #FFFFFF; --muted: #8892B0;
@@ -14,15 +14,23 @@
     body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--white); margin: 0; line-height: 1.6; }
     header { background-color: var(--blue-primary); border-bottom: 2px solid var(--gold); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
     header h1 { color: var(--gold); font-size: 1.5rem; margin: 0; }
-    .back-btn { background: transparent; color: var(--white); border: 1px solid var(--border); padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: 600; text-decoration: none;}
+    .back-btn { background: transparent; color: var(--white); border: 1px solid var(--border); padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: 600; text-decoration: none; display: inline-block;}
     .back-btn:hover { background: var(--gold); color: #000; }
     .container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
     
-    .subject-section { margin-bottom: 40px; }
-    .subject-section h2 { color: var(--gold); border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-    .note-card { background: var(--blue-secondary); border-left: 4px solid var(--gold); padding: 20px; border-radius: 8px; margin-top: 15px; }
-    .note-date { font-size: 0.8rem; color: var(--muted); margin-bottom: 10px; }
-    .note-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 10px; color: #fff; }
+    /* New Subject Grid Styles */
+    .subject-grid { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-top: 50px;}
+    .subject-card-main { background: var(--blue-secondary); border: 2px solid var(--border); padding: 40px 20px; border-radius: 12px; cursor: pointer; text-align: center; flex: 1; min-width: 250px; font-size: 1.5rem; font-weight: bold; transition: 0.3s; color: var(--gold);}
+    .subject-card-main:hover { background: var(--gold); color: var(--bg); border-color: var(--gold); transform: translateY(-5px); }
+    
+    /* Topics List Styles */
+    .topic-btn { background: var(--blue-secondary); border: 1px solid var(--border); border-left: 4px solid var(--gold); color: var(--white); padding: 15px 20px; margin-bottom: 15px; border-radius: 8px; cursor: pointer; width: 100%; text-align: left; font-size: 1.1rem; transition: 0.2s;}
+    .topic-btn:hover { background: var(--border); }
+    
+    /* Note View Styles */
+    .note-content-view { background: var(--blue-secondary); padding: 25px; border-radius: 8px; border-left: 4px solid var(--gold); margin-top: 20px; font-size: 1.05rem;}
+    .note-date { font-size: 0.9rem; color: var(--muted); margin-bottom: 15px; }
+    #selectedSubjectTitle, #noteTitleDisplay { color: var(--gold); border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 20px;}
   </style>
 </head>
 <body>
@@ -30,30 +38,68 @@
     <h1>My Subject Notes</h1>
     <a href="index.html" class="back-btn">Back to Dashboard</a>
   </header>
-  <div class="container" id="notesContainer"></div>
+  
+  <div class="container">
+    <div id="mainView" class="subject-grid">
+       <div class="subject-card-main" onclick="openSubject('Chemistry')">🧪 Chemistry</div>
+       <div class="subject-card-main" onclick="openSubject('Physics')">⚛️ Physics</div>
+       <div class="subject-card-main" onclick="openSubject('Combined Maths')">📐 Combined Maths</div>
+    </div>
+    
+    <div id="topicsView" style="display: none;">
+       <button class="back-btn" onclick="goBackToSubjects()" style="margin-bottom: 20px;">⬅ Back to Subjects</button>
+       <h2 id="selectedSubjectTitle"></h2>
+       <div id="topicsContainer"></div>
+    </div>
+
+    <div id="noteView" style="display: none;">
+       <button class="back-btn" onclick="goBackToTopics()" style="margin-bottom: 20px;">⬅ Back to Topics</button>
+       <h2 id="noteTitleDisplay"></h2>
+       <div class="note-date" id="noteDateDisplay"></div>
+       <div class="note-content-view" id="noteContentDisplay"></div>
+    </div>
+  </div>
 
   <script>
-    function renderNotes() {
-      const container = document.getElementById('notesContainer');
-      let html = '';
+    let currentSubject = '';
+    
+    function openSubject(subject) {
+      currentSubject = subject;
+      document.getElementById('mainView').style.display = 'none';
+      document.getElementById('topicsView').style.display = 'block';
+      document.getElementById('selectedSubjectTitle').innerText = subject + " Notes";
       
-      for (const [subject, notes] of Object.entries(notesData)) {
-        if (notes.length > 0) {
-          html += `<div class="subject-section"><h2>${subject}</h2>`;
-          notes.forEach(note => {
-            html += `
-              <div class="note-card">
-                <div class="note-date">📅 ${note.date}</div>
-                <div class="note-title">${note.title}</div>
-                <div class="note-content">${note.content}</div>
-              </div>`;
-          });
-          html += `</div>`;
-        }
+      let html = '';
+      let notes = notesData[subject] || [];
+      if(notes.length > 0) {
+        notes.forEach((note, index) => {
+          html += `<button class="topic-btn" onclick="openNote(${index})">${note.title} <span style="float:right; font-size:0.85rem; color:var(--muted);">📅 ${note.date}</span></button>`;
+        });
+      } else {
+        html = '<p style="color:var(--muted); text-align:center; margin-top:30px;">තාම මේ විෂයට Notes මොකුත් update කරලා නෑ මචන්.</p>';
       }
-      container.innerHTML = html || '<p style="color:var(--muted); text-align:center;">තාම Notes මොකුත් update කරලා නෑ මචන්.</p>';
+      document.getElementById('topicsContainer').innerHTML = html;
     }
-    window.onload = renderNotes;
+    
+    function openNote(index) {
+      let note = notesData[currentSubject][index];
+      document.getElementById('topicsView').style.display = 'none';
+      document.getElementById('noteView').style.display = 'block';
+      
+      document.getElementById('noteTitleDisplay').innerText = note.title;
+      document.getElementById('noteDateDisplay').innerText = '📅 Updated on: ' + note.date;
+      document.getElementById('noteContentDisplay').innerHTML = note.content;
+    }
+
+    function goBackToSubjects() {
+      document.getElementById('topicsView').style.display = 'none';
+      document.getElementById('mainView').style.display = 'flex';
+    }
+
+    function goBackToTopics() {
+      document.getElementById('noteView').style.display = 'none';
+      document.getElementById('topicsView').style.display = 'block';
+    }
   </script>
 </body>
 </html>
